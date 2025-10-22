@@ -1,0 +1,1 @@
+print("nico".endswith("a"))
