@@ -1,3 +1,5 @@
+import requests
+
 websites = (
     "google.com",
     "airbnb.com",
