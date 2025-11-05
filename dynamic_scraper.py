@@ -1,6 +1,7 @@
 from playwright.sync_api import sync_playwright
 import time
 from bs4 import BeautifulSoup
+import csv
 
 p = sync_playwright().start()
 
@@ -10,6 +11,9 @@ page = browser.new_page()
 
 # page.goto("https://www.wanted.co.kr")
 page.goto("https://www.wanted.co.kr/search?query=flutter&tab=position")
+
+# # #headless mode
+# # page.screenshot(path="screenshot.png")
 
 # frame_locator = page.frame_locator("iframe.ab-in-app-message")  # iframe 선택
 # frame_locator.locator("#action-button-next").click()
@@ -34,7 +38,7 @@ page.goto("https://www.wanted.co.kr/search?query=flutter&tab=position")
 
 for x in range (3):
     page.keyboard.down("End")
-    time.sleep(5)   
+    time.sleep(3)   
 
 content = page.content()
 
@@ -49,21 +53,34 @@ jobs_db = []
 for job in jobs:
     job_url = f"https://www.wanted.co.kr{job.find('a')['href']}"
     title = job.find("strong", class_ = "JobCard_title___kfvj").text
-    company_name = job.find("span", class_ = "CompanyNameWithLocationPeriod_CompanyNameWithLocationPeriod__company__").text
-    requirement = job.find("span", class_ = "CompanyNameWithLocationPeriod_CompanyNameWithLocationPeriod__location__").text
-    reward = job.find("span", class_ = "JobCard_reward__").text
+    company_name = job.find("span", class_ = "CompanyNameWithLocationPeriod_CompanyNameWithLocationPeriod__company__ByVLu").text
+    # requirement = job.find("span", class_ = "CompanyNameWithLocationPeriod_CompanyNameWithLocationPeriod__location4__w0l").text
+    reward = job.find("span", class_ = "JobCard_reward__oCSIQ").text
 
 
-job = {
-    "title" :title,
-    "company_name": company_name,
-    "reward": reward,
-    "link" : job_url
-       }
+    job = {
+        "title" :title,
+        "company_name": company_name,
+        "reward": reward,
+        "link" : job_url
+    }
 
-jobs_db.append(job)
+    jobs_db.append(job)
 
 print(jobs_db)
 print(len(jobs_db))
-# #headless mode
-# page.screenshot(path="screenshot.png")
+
+file = open("jobs.csv", "w")
+writer = csv.writer(file)
+writer.writerow(
+    [
+        "Title", 
+        "Company", 
+        "Reward", 
+        "Link"
+    ]
+)
+
+for job in jobs_db:
+    writer.writerow(job.values())
+file.close()
