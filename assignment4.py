@@ -24,11 +24,11 @@ HEADERS = {
 }
 
 class JobInfo:
-    def __init__(self, company_name, job_title, job_link, job_description):
+    def __init__(self, company_name, job_title, job_link, job_description=""):
         self.company_name = company_name
         self.job_title = job_title
         self.job_link = job_link
-        self.job_description = job_description
+        self.job_description = job_description if job_description else job_title
 
     def __str__(self):
         return (
@@ -39,7 +39,7 @@ class JobInfo:
             + "-"*50
         )
 
-def scrape_jobs(url):
+def scrape_jobs_berlin(url):
     all_jobs = []
     while url:
         response = requests.get(url, headers = HEADERS)
@@ -68,13 +68,14 @@ def scrape_jobs(url):
 
     return all_jobs
 
-all_jobs = scrape_jobs("https://berlinstartupjobs.com/engineering/")
+if __name__ == "__main__":
+    all_jobs = scrape_jobs_berlin("https://berlinstartupjobs.com/engineering/")
 
-skills = ["python", "typescript", "javascript"]
+    skills = ["python", "typescript", "javascript"]
 
-for skill in skills:
-    skill_url = f"https://berlinstartupjobs.com/skill-areas/{skill}/"
-    all_jobs.extend(scrape_jobs(skill_url))
+    for skill in skills:
+        skill_url = f"https://berlinstartupjobs.com/skill-areas/{skill}/"
+        all_jobs.extend(scrape_jobs_berlin(skill_url))
 
-for job in all_jobs:
-    print(job)
+    for job in all_jobs:
+        print(job)
