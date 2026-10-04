@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Scrapper</title>
+    <style>
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f6f8; color: #1f2328; }
+        main { max-width: 560px; margin: 80px auto; padding: 0 16px; text-align: center; }
+        h1 { margin-bottom: 8px; }
+        p { color: #59636e; }
+        form { display: flex; gap: 8px; margin-top: 28px; }
+        input { flex: 1; min-width: 0; padding: 12px; font-size: 16px; border: 1px solid #d0d7de; border-radius: 8px; }
+        button { padding: 12px 20px; font-size: 16px; border: 0; border-radius: 8px; background: #0969da; color: white; cursor: pointer; }
+        button:hover { background: #0550ae; }
+        .message { min-height: 1.4em; color: #cf222e; }
+        .keywords a { display: inline-block; margin: 4px; padding: 6px 14px; border: 1px solid #d0d7de; border-radius: 999px; background: white; color: #0969da; text-decoration: none; }
+        .keywords a:hover { border-color: #0969da; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Job Scrapper</h1>
+        <p>Search jobs on Berlin Startup Jobs, Web3 Career and We Work Remotely.</p>
+        <form id="search-form">
+            <input type="text" name="keyword" placeholder="Write one keyword please" required />
+            <button>Search</button>
+        </form>
+        <p class="message" id="message"></p>
+        <div class="keywords">
+            
+                <a href="search/python/">python</a>
+            
+                <a href="search/typescript/">typescript</a>
+            
+                <a href="search/javascript/">javascript</a>
+            
+                <a href="search/rust/">rust</a>
+            
+        </div>
+    </main>
+    <script>
+        const keywords = ["python", "typescript", "javascript", "rust"];
+        const staticSite = true;
+        const form = document.getElementById("search-form");
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const keyword = form.keyword.value.trim().toLowerCase();
+            // GitHub Pages only has the pages that were built ahead of time
+            if (staticSite && !keywords.includes(keyword)) {
+                document.getElementById("message").textContent = `No results for "${keyword}" yet. Try one of these:`;
+                return;
+            }
+            // Relative link, so it works on localhost and under /Intro-to-python-scraper/ on GitHub Pages
+            location.href = `search/${encodeURIComponent(keyword)}/`;
+        });
+    </script>
+</body>
+</html>
