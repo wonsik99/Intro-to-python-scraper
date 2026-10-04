@@ -47,7 +47,7 @@ def scrape_jobs_berlin(url):
         jobs_section = soup.find("ul", class_ = "jobs-list-items")
         if not jobs_section:
             print("jobs section not found")
-            exit()
+            return all_jobs # exit() would stop the whole Flask server
 
         jobs = jobs_section.find_all("li", class_ = "bjs-jlid")
 

@@ -1,0 +1,7 @@
+flask==3.1.3
+frozen-flask==1.0.2
+requests==2.34.2
+beautifulsoup4==4.15.0
+ghp-import==2.1.0
+# only dynamic_scraper.py uses playwright (run "playwright install chromium" once)
+playwright==1.63.0
