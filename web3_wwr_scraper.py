@@ -2,7 +2,7 @@ import re
 import xml.etree.ElementTree as ET
 import requests
 from bs4 import BeautifulSoup
-from assignment4 import scrape_jobs_berlin, JobInfo, HEADERS
+from berlin_scraper import scrape_jobs_berlin, JobInfo, HEADERS
 
 def scrape_web3_career(url, max_pages = 3):
     all_jobs = []

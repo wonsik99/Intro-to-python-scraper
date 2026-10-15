@@ -2,8 +2,8 @@ import sys
 from datetime import date
 from flask import Flask, render_template
 from flask_frozen import Freezer
-from assignment4 import scrape_jobs_berlin
-from assignment5 import scrape_web3_career, scrape_weworkremotely
+from berlin_scraper import scrape_jobs_berlin
+from web3_wwr_scraper import scrape_web3_career, scrape_weworkremotely
 
 # Keywords that get a pre-built page on GitHub Pages
 KEYWORDS = ["python", "typescript", "javascript", "rust"]
@@ -52,10 +52,10 @@ def search_pages():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "build":
-        # python assignment5_flask.py build -> static HTML files in build/
+        # python app.py build -> static HTML files in build/
         app.config["STATIC_SITE"] = True
         freezer.freeze()
         print("Done! The static site is in build/")
     else:
-        # python assignment5_flask.py -> live search at http://localhost:5001
+        # python app.py -> live search at http://localhost:5001
         app.run("0.0.0.0", port=5001)
