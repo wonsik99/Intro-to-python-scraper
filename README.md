@@ -1,10 +1,17 @@
 # Job Scrapper
 
-Berlin Startup Jobs, Web3 Career, We Work Remotely에서 키워드로 채용 공고를 모아 보여주는 Flask 앱입니다 (assignment 5).
+A Flask app that searches three job boards for one skill at a time: Berlin Startup Jobs, Web3 Career and We Work Remotely. Built as assignment 5 of a Python web scraping course.
 
-사이트: https://wonsik99.github.io/Intro-to-python-scraper/
+Live site: https://wonsik99.github.io/Intro-to-python-scraper/
 
-## 처음 한 번만: 설치
+## How it works
+
+- `assignment4.py` scrapes Berlin Startup Jobs.
+- `assignment5.py` scrapes Web3 Career and reads the We Work Remotely RSS feeds. Their search page blocks scrapers, so the feeds are filtered by keyword instead.
+- `assignment5_flask.py` is the Flask app. Run locally, it scrapes live for any skill you type.
+- GitHub Pages can only serve files, not run Python. So Frozen-Flask renders a results page for each skill in `KEYWORDS` ahead of time, and those HTML files are what the live site shows.
+
+## Setup
 
 ```bash
 python3 -m venv .venv
@@ -12,30 +19,30 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## 내 컴퓨터에서 실행
+## Run locally
 
 ```bash
 python assignment5_flask.py
 ```
 
-http://localhost:5001 에서 아무 키워드나 실시간으로 검색할 수 있습니다.
+Open http://localhost:5001 and search for any skill.
 
-## GitHub Pages에 배포
-
-GitHub Pages는 HTML 파일만 보여줄 수 있고 파이썬은 실행하지 못합니다. 그래서 `assignment5_flask.py`의 `KEYWORDS`에 있는 키워드만 미리 스크래핑해서 HTML로 만들고(Frozen-Flask), 그 파일들을 `gh-pages` 브랜치에 올립니다.
+## Update the live site
 
 ```bash
-python assignment5_flask.py build   # build/ 폴더에 HTML 생성
-ghp-import -n -p build              # build/ 내용을 gh-pages 브랜치에 커밋하고 push
+python assignment5_flask.py build   # scrape again and write the HTML to build/
+ghp-import -n -p build              # commit build/ to the gh-pages branch and push it
 ```
 
-1~2분 뒤 사이트에 반영됩니다. 공고는 build한 날 기준이라, 새 공고를 보려면 위 두 줄을 다시 실행하면 됩니다. 키워드를 추가하려면 `KEYWORDS` 리스트에 넣고 다시 build → 배포하세요.
+GitHub Pages picks up the new pages a minute or two later. Job listings are only as fresh as the last build, so run both commands again whenever you want new ones. To add a skill, put it in `KEYWORDS` in `assignment5_flask.py` and rebuild.
 
-## 파일
+## Files
 
-| 파일 | 내용 |
+| File | What it does |
 |---|---|
-| `assignment4.py` | Berlin Startup Jobs 스크래퍼, `JobInfo` 클래스 |
-| `assignment5.py` | Web3 Career, We Work Remotely 스크래퍼 |
-| `assignment5_flask.py` | Flask 앱 + 정적 사이트 빌드 |
-| `templates/` | 홈, 검색 결과 HTML |
+| `assignment4.py` | Berlin Startup Jobs scraper and the `JobInfo` class |
+| `assignment5.py` | Web3 Career and We Work Remotely scrapers |
+| `assignment5_flask.py` | Flask app and static site build |
+| `templates/` | Page templates (`base.html` holds the shared layout) |
+
+The other `.py` files are earlier exercises from the course.
