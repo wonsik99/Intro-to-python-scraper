@@ -1,8 +1,8 @@
-# Job Scrapper
+# Job Scraper
 
 I made this repo while learning web scraping with Python (requests and BeautifulSoup) and Flask. The final project is a small job search site: pick a skill, and it shows matching jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely.
 
-Live site: https://wonsik99.github.io/Intro-to-python-scraper/
+Live site: https://wonsik99.github.io/python-job-scraper/
 
 ## How it works
 

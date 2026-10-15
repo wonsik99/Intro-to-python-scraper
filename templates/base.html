@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
     <meta name="description" content="Developer jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, searched by skill.">
-    <title>{% block title %}Job Scrapper{% endblock %}</title>
+    <title>{% block title %}Job Scraper{% endblock %}</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='10' width='28' height='13' rx='3' fill='%23ffe24a'/></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,14 +75,14 @@
 <body>
     <div class="page">
         <header class="top">
-            <a class="wordmark" href="{% block home_link %}./{% endblock %}">Job Scrapper</a>
+            <a class="wordmark" href="{% block home_link %}./{% endblock %}">Job Scraper</a>
             {% block nav %}{% endblock %}
         </header>
         <main>
             {% block content %}{% endblock %}
         </main>
         <footer class="footer">
-            <p>Jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, last updated {{ updated.strftime("%B") }} {{ updated.day }}, {{ updated.year }}. <a href="https://github.com/wonsik99/Intro-to-python-scraper">Source code on GitHub</a></p>
+            <p>Jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, last updated {{ updated.strftime("%B") }} {{ updated.day }}, {{ updated.year }}. <a href="https://github.com/wonsik99/python-job-scraper">Source code on GitHub</a></p>
         </footer>
     </div>
     {% block scripts %}{% endblock %}
