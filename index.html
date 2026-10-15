@@ -3,58 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="Developer jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, searched by skill.">
     <title>Job Scrapper</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='10' width='28' height='13' rx='3' fill='%23ffe24a'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f6f8; color: #1f2328; }
-        main { max-width: 560px; margin: 80px auto; padding: 0 16px; text-align: center; }
-        h1 { margin-bottom: 8px; }
-        p { color: #59636e; }
-        form { display: flex; gap: 8px; margin-top: 28px; }
-        input { flex: 1; min-width: 0; padding: 12px; font-size: 16px; border: 1px solid #d0d7de; border-radius: 8px; }
-        button { padding: 12px 20px; font-size: 16px; border: 0; border-radius: 8px; background: #0969da; color: white; cursor: pointer; }
-        button:hover { background: #0550ae; }
-        .message { min-height: 1.4em; color: #cf222e; }
-        .keywords a { display: inline-block; margin: 4px; padding: 6px 14px; border: 1px solid #d0d7de; border-radius: 999px; background: white; color: #0969da; text-decoration: none; }
-        .keywords a:hover { border-color: #0969da; }
+        /* Highlighter yellow always means "this matches your skill" */
+        :root {
+            --paper: #ffffff;
+            --ink: #18224b;
+            --muted: #5e6787;
+            --rule: #dce0ec;
+            --marker: #ffe24a;
+            --hl-bg: var(--marker);
+            --hl-text: var(--ink);
+            --hover-thickness: 0.45em;
+            --hover-offset: -0.3em;
+            --source-1: #18224b;
+            --source-2: #6b76b5;
+            --source-3: #b9c0e3;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #10163a;
+                --ink: #eef0f8;
+                --muted: #a3aac8;
+                --rule: #2a3366;
+                --hl-bg: transparent;
+                --hl-text: var(--marker);
+                --hover-thickness: 2px;
+                --hover-offset: 5px;
+                --source-1: #eef0f8;
+                --source-2: #9ea8d8;
+                --source-3: #4e5a94;
+            }
+        }
+        * { box-sizing: border-box; }
+        [hidden] { display: none !important; }
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: "Archivo", system-ui, sans-serif;
+            font-size: 18px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: inherit; }
+        :focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
+        .page { max-width: 1120px; margin: 0 auto; padding: 28px 24px 56px; }
+        .top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; }
+        .wordmark { font-size: 19px; font-weight: 800; font-stretch: 75%; text-decoration: none; }
+        .big { font-weight: 900; font-stretch: 62%; line-height: 0.9; letter-spacing: -0.01em; }
+        .footer { max-width: 760px; margin-top: 112px; padding-top: 20px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 15px; }
+        .footer p { margin: 0; }
+        .footer a { color: var(--ink); }
+        @media (max-width: 600px) {
+            body { font-size: 17px; }
+            .page { padding: 20px 16px 48px; }
+            .footer { margin-top: 80px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+        
+        .intro { margin: 80px 0 12px; font-size: 21px; color: var(--muted); }
+        .skills { list-style: none; margin: 0; padding: 0; }
+        .skills li { line-height: 0.95; }
+        .skills a {
+            display: inline-block;
+            padding: 0 0.04em;
+            font-size: clamp(68px, 15vw, 176px);
+            text-decoration: none;
+            /* the highlighter stroke, drawn in on hover */
+            background-image: linear-gradient(var(--hl-bg), var(--hl-bg));
+            background-repeat: no-repeat;
+            background-position: 0 72%;
+            background-size: 0% 48%;
+            transition: background-size 0.3s ease-out, color 0.3s;
+        }
+        .skills a:hover, .skills a:focus-visible { background-size: 100% 48%; color: var(--hl-text); }
+        .other { max-width: 560px; margin-top: 64px; }
+        .other label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 15px; }
+        .other .row { display: flex; gap: 12px; }
+        .other input {
+            flex: 1;
+            min-width: 0;
+            padding: 6px 0;
+            border: 0;
+            border-bottom: 3px solid var(--ink);
+            border-radius: 0;
+            background: transparent;
+            color: var(--ink);
+            font: inherit;
+            font-size: 24px;
+        }
+        .other input::placeholder { color: var(--muted); }
+        .other button {
+            padding: 0 22px;
+            border: 0;
+            border-radius: 6px;
+            background: var(--ink);
+            color: var(--paper);
+            font: inherit;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .message { min-height: 1.5em; margin: 12px 0 0; }
+        @media (max-width: 480px) {
+            .other .row { flex-direction: column; align-items: flex-start; }
+            .other input { width: 100%; }
+            .other button { padding: 12px 22px; }
+        }
+
     </style>
 </head>
 <body>
-    <main>
-        <h1>Job Scrapper</h1>
-        <p>Search jobs on Berlin Startup Jobs, Web3 Career and We Work Remotely.</p>
-        <form id="search-form">
-            <input type="text" name="keyword" placeholder="Write one keyword please" required />
-            <button>Search</button>
-        </form>
-        <p class="message" id="message"></p>
-        <div class="keywords">
+    <div class="page">
+        <header class="top">
+            <a class="wordmark" href="./">Job Scrapper</a>
             
-                <a href="search/python/">python</a>
+        </header>
+        <main>
             
-                <a href="search/typescript/">typescript</a>
-            
-                <a href="search/javascript/">javascript</a>
-            
-                <a href="search/rust/">rust</a>
-            
-        </div>
-    </main>
+            <p class="intro">What job do you want?</p>
+            <ul class="skills">
+                
+                    <li><a class="big" href="search/python/">python</a></li>
+                
+                    <li><a class="big" href="search/typescript/">typescript</a></li>
+                
+                    <li><a class="big" href="search/javascript/">javascript</a></li>
+                
+                    <li><a class="big" href="search/rust/">rust</a></li>
+                
+            </ul>
+            <form class="other" id="search-form">
+                <label for="keyword">Looking for another skill?</label>
+                <div class="row">
+                    <input id="keyword" name="keyword" type="text" placeholder="Write one keyword please" autocomplete="off" required>
+                    <button>Search jobs</button>
+                </div>
+                <p class="message" id="message" role="status"></p>
+            </form>
+
+        </main>
+        <footer class="footer">
+            <p>Jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, last updated October 14, 2026. <a href="https://github.com/wonsik99/Intro-to-python-scraper">Source code on GitHub</a></p>
+        </footer>
+    </div>
+    
     <script>
         const keywords = ["python", "typescript", "javascript", "rust"];
         const staticSite = true;
         const form = document.getElementById("search-form");
+        const message = document.getElementById("message");
 
         form.addEventListener("submit", (event) => {
             event.preventDefault();
             const keyword = form.keyword.value.trim().toLowerCase();
             // GitHub Pages only has the pages that were built ahead of time
             if (staticSite && !keywords.includes(keyword)) {
-                document.getElementById("message").textContent = `No results for "${keyword}" yet. Try one of these:`;
+                message.textContent = `There's no page for "${keyword}" yet. Pick one of the skills above.`;
                 return;
             }
             // Relative link, so it works on localhost and under /Intro-to-python-scraper/ on GitHub Pages
             location.href = `search/${encodeURIComponent(keyword)}/`;
         });
     </script>
+
 </body>
 </html>

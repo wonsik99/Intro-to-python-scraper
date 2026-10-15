@@ -3,449 +3,835 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="Developer jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, searched by skill.">
     <title>python jobs | Job Scrapper</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='10' width='28' height='13' rx='3' fill='%23ffe24a'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f6f8; color: #1f2328; }
-        main { max-width: 760px; margin: 48px auto; padding: 0 16px; }
-        header { text-align: center; }
-        header p { color: #59636e; }
-        a { color: #0969da; }
-        h2 { margin-top: 40px; padding-bottom: 8px; border-bottom: 2px solid #d0d7de; font-size: 20px; }
-        h2 span { color: #59636e; font-weight: normal; }
-        .job { display: block; margin: 12px 0; padding: 16px; border: 1px solid #d0d7de; border-radius: 8px; background: white; color: #59636e; text-decoration: none; }
-        .job:hover { border-color: #0969da; }
-        .job strong { display: block; margin-bottom: 4px; color: #0969da; }
-        .empty { color: #59636e; }
+        /* Highlighter yellow always means "this matches your skill" */
+        :root {
+            --paper: #ffffff;
+            --ink: #18224b;
+            --muted: #5e6787;
+            --rule: #dce0ec;
+            --marker: #ffe24a;
+            --hl-bg: var(--marker);
+            --hl-text: var(--ink);
+            --hover-thickness: 0.45em;
+            --hover-offset: -0.3em;
+            --source-1: #18224b;
+            --source-2: #6b76b5;
+            --source-3: #b9c0e3;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #10163a;
+                --ink: #eef0f8;
+                --muted: #a3aac8;
+                --rule: #2a3366;
+                --hl-bg: transparent;
+                --hl-text: var(--marker);
+                --hover-thickness: 2px;
+                --hover-offset: 5px;
+                --source-1: #eef0f8;
+                --source-2: #9ea8d8;
+                --source-3: #4e5a94;
+            }
+        }
+        * { box-sizing: border-box; }
+        [hidden] { display: none !important; }
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: "Archivo", system-ui, sans-serif;
+            font-size: 18px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: inherit; }
+        :focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
+        .page { max-width: 1120px; margin: 0 auto; padding: 28px 24px 56px; }
+        .top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; }
+        .wordmark { font-size: 19px; font-weight: 800; font-stretch: 75%; text-decoration: none; }
+        .big { font-weight: 900; font-stretch: 62%; line-height: 0.9; letter-spacing: -0.01em; }
+        .footer { max-width: 760px; margin-top: 112px; padding-top: 20px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 15px; }
+        .footer p { margin: 0; }
+        .footer a { color: var(--ink); }
+        @media (max-width: 600px) {
+            body { font-size: 17px; }
+            .page { padding: 20px 16px 48px; }
+            .footer { margin-top: 80px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+        
+        .skill-nav { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 16px; }
+        .skill-nav a { color: var(--muted); text-decoration: none; }
+        .skill-nav a:hover { color: var(--ink); }
+        .skill-nav a[aria-current] { color: var(--hl-text); background: var(--hl-bg); padding: 0 4px; }
+        .hero { margin-top: 64px; }
+        .hero h1 { margin: 0; font-size: clamp(76px, 17vw, 208px); overflow-wrap: anywhere; }
+        .hero h1 span {
+            padding: 0 0.04em;
+            background-image: linear-gradient(var(--hl-bg), var(--hl-bg));
+            background-repeat: no-repeat;
+            background-position: 0 72%;
+            background-size: 100% 48%;
+            color: var(--hl-text);
+            -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
+            animation: draw 0.7s 0.2s ease-out both;
+        }
+        @keyframes draw { from { background-size: 0% 48%; } }
+        .summary { margin: 32px 0 0; color: var(--muted); font-size: 21px; }
+        .sources, .filter, .site { max-width: 760px; }
+        .sources { margin-top: 40px; }
+        .bar { display: flex; gap: 3px; height: 12px; }
+        .bar span { flex-basis: 0; border-radius: 2px; }
+        .legend { display: flex; flex-wrap: wrap; gap: 6px 24px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 15px; }
+        .legend a { color: var(--muted); text-decoration: none; }
+        .legend a:hover { color: var(--ink); }
+        .legend b { margin-left: 4px; color: var(--ink); }
+        .swatch { display: inline-block; width: 10px; height: 10px; margin-right: 8px; border-radius: 2px; }
+        .filter { margin-top: 48px; }
+        .filter label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 15px; }
+        .filter input {
+            width: 100%;
+            padding: 8px 0;
+            border: 0;
+            border-bottom: 2px solid var(--rule);
+            border-radius: 0;
+            background: transparent;
+            color: var(--ink);
+            font: inherit;
+            font-size: 20px;
+        }
+        .filter input:focus-visible { outline: none; border-bottom-color: var(--ink); }
+        .site { margin-top: 64px; scroll-margin-top: 24px; }
+        .site h2 { display: flex; align-items: center; margin: 0 0 4px; font-size: 28px; font-weight: 800; font-stretch: 75%; line-height: 1.2; }
+        .site h2 .count { margin-left: 12px; color: var(--muted); font-size: 18px; font-weight: 500; font-stretch: 100%; }
+        .jobs { margin: 0; padding: 0; list-style: none; }
+        .job, .none { border-bottom: 1px solid var(--rule); }
+        .job a { display: block; padding: 14px 0; text-decoration: none; }
+        .title { display: block; font-size: 19px; font-weight: 600; line-height: 1.35; }
+        .company { display: block; margin-top: 2px; color: var(--muted); font-size: 15px; }
+        .job a:hover .title {
+            text-decoration: underline;
+            text-decoration-color: var(--marker);
+            text-decoration-thickness: var(--hover-thickness);
+            text-underline-offset: var(--hover-offset);
+            text-decoration-skip-ink: none;
+        }
+        mark { padding: 0 0.06em; background: linear-gradient(transparent 38%, var(--hl-bg) 38%, var(--hl-bg) 92%, transparent 92%); color: var(--hl-text); }
+        .none { margin: 0; padding: 14px 0; color: var(--muted); }
+
     </style>
 </head>
 <body>
-    <main>
-        <header>
-            <h1>Results for "python"</h1>
-            <p>82 jobs · updated 2026-10-14</p>
-            <a href="../../">← Search again</a>
-        </header>
+    <div class="page">
+        <header class="top">
+            <a class="wordmark" href="../../">Job Scrapper</a>
+            
+        <nav class="skill-nav" aria-label="Skills">
+            
+                <a href="../python/" aria-current="page">python</a>
+            
+                <a href="../typescript/" >typescript</a>
+            
+                <a href="../javascript/" >javascript</a>
+            
+                <a href="../rust/" >rust</a>
+            
+        </nav>
 
-        
-            <h2>Berlin Startup Jobs <span>(4)</span></h2>
-            
-                <a class="job" href="https://berlinstartupjobs.com/engineering/senior-backend-developer-golang-m-f-d-datatroniq/" target="_blank" rel="noopener">
-                    <strong>Senior Backend Developer – Go &amp; Kubernetes</strong>
-                    DATATRONiQ
-                </a>
-            
-                <a class="job" href="https://berlinstartupjobs.com/engineering/senior-data-scientist-datatroniq/" target="_blank" rel="noopener">
-                    <strong>Senior Data Scientist – Python, ML &amp; Signal-Processing</strong>
-                    DATATRONiQ
-                </a>
-            
-                <a class="job" href="https://berlinstartupjobs.com/engineering/senior-fullstack-developer-typescript-javascript-node-js-datatroniq/" target="_blank" rel="noopener">
-                    <strong>Senior Frontend Developer – TypeScript, React &amp; Design-Gespür</strong>
-                    DATATRONiQ
-                </a>
-            
-                <a class="job" href="https://berlinstartupjobs.com/engineering/senior-full-stack-developer-data-scientist-remote-friendly-aidar/" target="_blank" rel="noopener">
-                    <strong>Senior Full-Stack Developer / Data Scientist (remote-friendly)</strong>
-                    AIDAR
-                </a>
-            
-        
-            <h2>Web3 Career <span>(45)</span></h2>
-            
-                <a class="job" href="https://web3.career/robotics-lead-telegraph/155257" target="_blank" rel="noopener">
-                    <strong>Robotics Lead</strong>
-                    Telegraph
-                </a>
-            
-                <a class="job" href="https://web3.career/staff-software-engineer-ai-security-go-rust-python-zscaler/153659" target="_blank" rel="noopener">
-                    <strong>Staff Software Engineer AI Security Go Rust Python</strong>
-                    Zscaler
-                </a>
-            
-                <a class="job" href="https://web3.career/software-engineer-rust-python-asset-pricing-hedging-bitpanda/150010" target="_blank" rel="noopener">
-                    <strong>Software Engineer Rust Python Asset Pricing Hedging</strong>
-                    Bitpanda
-                </a>
-            
-                <a class="job" href="https://web3.career/python-engineer-asset-pricing-hedging-bitpanda/103283" target="_blank" rel="noopener">
-                    <strong>Python Engineer Asset Pricing Hedging</strong>
-                    Bitpanda
-                </a>
-            
-                <a class="job" href="https://web3.career/software-engineer-python-asset-pricing-hedging-bitpanda/149554" target="_blank" rel="noopener">
-                    <strong>Software Engineer Python Asset Pricing Hedging</strong>
-                    Bitpanda
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-qa-engineer-exploratory-python-trading-technologies-binance/150664" target="_blank" rel="noopener">
-                    <strong>Senior QA Engineer Exploratory Python Trading Technologies</strong>
-                    Binance
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-software-development-engineer-in-test-automation-python-trading-technologies-binance/150607" target="_blank" rel="noopener">
-                    <strong>Senior Software Development Engineer in Test Automation Python Trading Technologies</strong>
-                    Binance
-                </a>
-            
-                <a class="job" href="https://web3.career/it-junior-python-developer-london-b2c2/144971" target="_blank" rel="noopener">
-                    <strong>IT Junior Python Developer London</strong>
-                    B2c2
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-software-engineer-python-asset-pricing-hedging-bitpanda/101436" target="_blank" rel="noopener">
-                    <strong>Senior Software Engineer Python Asset Pricing Hedging</strong>
-                    Bitpanda
-                </a>
-            
-                <a class="job" href="https://web3.career/software-developer-python-dv-equities-dvtrading/149355" target="_blank" rel="noopener">
-                    <strong>Software Developer Python DV Equities</strong>
-                    Dvtrading
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-solutions-engineer-api-python-node-js-binance/148589" target="_blank" rel="noopener">
-                    <strong>Senior Solutions Engineer API Python Node.JS</strong>
-                    Binance
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-api-solutions-engineer-python-node-js-binance/146936" target="_blank" rel="noopener">
-                    <strong>Senior API Solutions Engineer Python Node.JS</strong>
-                    Binance
-                </a>
-            
-                <a class="job" href="https://web3.career/jr-mid-python-developer-accounting-team-b2c2/138510" target="_blank" rel="noopener">
-                    <strong>JrMid Python Developer Accounting Team</strong>
-                    B2c2
-                </a>
-            
-                <a class="job" href="https://web3.career/lead-python-developer-defi-infrastructure-connecthum/145672" target="_blank" rel="noopener">
-                    <strong>Lead Python Developer DeFi Infrastructure</strong>
-                    ConnectHum
-                </a>
-            
-                <a class="job" href="https://web3.career/security-engineer-python-binance/144925" target="_blank" rel="noopener">
-                    <strong>Security Engineer Python</strong>
-                    Binance
-                </a>
-            
-                <a class="job" href="https://web3.career/principal-software-engineer-backend-python-golang-zscaler/143950" target="_blank" rel="noopener">
-                    <strong>Principal Software Engineer Backend Python Golang</strong>
-                    Zscaler
-                </a>
-            
-                <a class="job" href="https://web3.career/software-engineer-python-institutional-blockchain/143870" target="_blank" rel="noopener">
-                    <strong>Software Engineer Python Institutional</strong>
-                    Blockchain
-                </a>
-            
-                <a class="job" href="https://web3.career/backend-engineer-python-node-js-crypto-com/143612" target="_blank" rel="noopener">
-                    <strong>Backend Engineer Python Node.js</strong>
-                    Crypto.com
-                </a>
-            
-                <a class="job" href="https://web3.career/back-end-engineer-python-bluecubeservices/142937" target="_blank" rel="noopener">
-                    <strong>BackEnd Engineer Python</strong>
-                    Bluecubeservices
-                </a>
-            
-                <a class="job" href="https://web3.career/quantitative-developer-c-java-go-python-coins/142903" target="_blank" rel="noopener">
-                    <strong>Quantitative Developer C++ Java Go Python</strong>
-                    Coins.ph
-                </a>
-            
-                <a class="job" href="https://web3.career/data-engineer-python-bitpanda/141465" target="_blank" rel="noopener">
-                    <strong>Data Engineer Python</strong>
-                    Bitpanda
-                </a>
-            
-                <a class="job" href="https://web3.career/binance-accelerator-program-infrastructure-security-python-llm-binance/141232" target="_blank" rel="noopener">
-                    <strong>Binance Accelerator Program Infrastructure Security Python LLM</strong>
-                    Binance
-                </a>
-            
-                <a class="job" href="https://web3.career/software-engineer-python-go-data-backend-kronosresearch/140542" target="_blank" rel="noopener">
-                    <strong>Software Engineer Python Go Data+Backend</strong>
-                    Kronosresearch
-                </a>
-            
-                <a class="job" href="https://web3.career/fullstack-engineer-web3-react-node-python-hotstufflabs/140432" target="_blank" rel="noopener">
-                    <strong>Fullstack EngineerWeb3 React Node Python</strong>
-                    Hotstuff Labs
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-software-engineer-full-stack-django-android-ai-fully-remote-dorbeleitconsulting/139621" target="_blank" rel="noopener">
-                    <strong>Senior Software Engineer FullStack Django Android AI Fully Remote</strong>
-                    dorbeleitconsulting
-                </a>
-            
-                <a class="job" href="https://web3.career/python-engineer-blockchain-team-wallet/133737" target="_blank" rel="noopener">
-                    <strong>Python Engineer Blockchain team</strong>
-                    Wallet
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-qa-engineer-exploratory-python-trading-tech-binance/116412" target="_blank" rel="noopener">
-                    <strong>Senior QA Engineer Exploratory Python Trading Tech</strong>
-                    Binance
-                </a>
-            
-                <a class="job" href="https://web3.career/contract-senior-backend-developer-python-themotleyfool/112026" target="_blank" rel="noopener">
-                    <strong>Contract Senior Backend Developer Python</strong>
-                    Themotleyfool
-                </a>
-            
-                <a class="job" href="https://web3.career/python-blockchain-developer-scionstaffing/111268" target="_blank" rel="noopener">
-                    <strong>Python Blockchain Developer</strong>
-                    Scion Staffing
-                </a>
-            
-                <a class="job" href="https://web3.career/backend-engineer-python-web3-bitpanda/104560" target="_blank" rel="noopener">
-                    <strong>Backend Engineer Python Web3</strong>
-                    Bitpanda
-                </a>
-            
-                <a class="job" href="https://web3.career/devops-engineer-aws-python-bitpanda/107336" target="_blank" rel="noopener">
-                    <strong>DevOps Engineer AWS Python</strong>
-                    Bitpanda
-                </a>
-            
-                <a class="job" href="https://web3.career/software-engineer-python-web3-bitpanda/107801" target="_blank" rel="noopener">
-                    <strong>Software Engineer Python Web3</strong>
-                    Bitpanda
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-python-developer-exchange-middle-and-back-office-crypto-com/107851" target="_blank" rel="noopener">
-                    <strong>Senior Python Developer Exchange Middle and Back office</strong>
-                    Crypto.com
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-backend-engineer-python-solidity-smart-contracts-bitpanda/106868" target="_blank" rel="noopener">
-                    <strong>Senior Backend Engineer Python Solidity Smart Contracts</strong>
-                    Bitpanda
-                </a>
-            
-                <a class="job" href="https://web3.career/python-developer-launchpadtechnologiesinc/73690" target="_blank" rel="noopener">
-                    <strong>Python Developer</strong>
-                    Launchpadtechnologiesinc
-                </a>
-            
-                <a class="job" href="https://web3.career/staff-software-development-engineer-python-automation-networking-zscaler/106749" target="_blank" rel="noopener">
-                    <strong>Staff Software Development EngineerPython Automation Networking</strong>
-                    Zscaler
-                </a>
-            
-                <a class="job" href="https://web3.career/full-stack-python-developer-cloud-iot-blockchain-agile-expertise-synechron/104974" target="_blank" rel="noopener">
-                    <strong>Full Stack Python Developer Cloud IoT Blockchain Agile Expertise</strong>
-                    Synechron
-                </a>
-            
-                <a class="job" href="https://web3.career/python-soft-engineer-junior-mid-ai-agents-crypto-almanak/104668" target="_blank" rel="noopener">
-                    <strong>Python Soft. Engineer JuniorMid AI Agents Crypto</strong>
-                    Almanak
-                </a>
-            
-                <a class="job" href="https://web3.career/principal-software-engineer-rust-python-fmr/104658" target="_blank" rel="noopener">
-                    <strong>Principal Software Engineer RUST Python</strong>
-                    Fmr
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-python-engineer-jimmytechnologies/103826" target="_blank" rel="noopener">
-                    <strong>Senior Python Engineer</strong>
-                    Jimmy Technologies
-                </a>
-            
-                <a class="job" href="https://web3.career/staff-software-development-engineer-python-automation-zscaler/103743" target="_blank" rel="noopener">
-                    <strong>Staff Software Development Engineer Python Automation</strong>
-                    Zscaler
-                </a>
-            
-                <a class="job" href="https://web3.career/python-engineer-wallet/102131" target="_blank" rel="noopener">
-                    <strong>Python Engineer</strong>
-                    Wallet
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-python-engineer-wallet/102084" target="_blank" rel="noopener">
-                    <strong>Senior Python Engineer</strong>
-                    Wallet
-                </a>
-            
-                <a class="job" href="https://web3.career/python-developer-with-blockchain-daml-or-solidity-phaxis/101070" target="_blank" rel="noopener">
-                    <strong>Python Developer with Blockchain DAML or Solidity</strong>
-                    Phaxis
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-backend-engineer-python-pricing-hedging-services-bitpanda/83648" target="_blank" rel="noopener">
-                    <strong>Senior Backend Engineer Python Pricing Hedging Services</strong>
-                    Bitpanda
-                </a>
-            
-        
-            <h2>We Work Remotely <span>(33)</span></h2>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/aitrainers-remote-ai-trainers-generalist-and-python-coding-experts" target="_blank" rel="noopener">
-                    <strong>Remote AI Trainers (Generalist and Python Coding Experts)</strong>
-                    AITrainers
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/databricks-deployment-strategist" target="_blank" rel="noopener">
-                    <strong>Deployment Strategist</strong>
-                    Databricks
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/databricks-delivery-solutions-architect-startups-emerging-enterprise" target="_blank" rel="noopener">
-                    <strong>Delivery Solutions Architect - Startups &amp; Emerging Enterprise</strong>
-                    Databricks
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/elation-health-case-resolution-engineer" target="_blank" rel="noopener">
-                    <strong>Case Resolution Engineer</strong>
-                    Elation Health
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/toptal-applied-ai-engineers-for-telecommunications-company" target="_blank" rel="noopener">
-                    <strong>Applied AI Engineers for telecommunications company</strong>
-                    Toptal
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/toptal-apigee-engineer-for-global-consumer-food-company" target="_blank" rel="noopener">
-                    <strong>Apigee Engineer for Global Consumer Food Company</strong>
-                    Toptal
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/toptal-full-stack-e-commerce-developer-with-sage-x3-experience" target="_blank" rel="noopener">
-                    <strong>Full-Stack E-commerce Developer with Sage X3 Experience</strong>
-                    Toptal
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/beyondtrust-cyber-defense-engineer" target="_blank" rel="noopener">
-                    <strong>Cyber Defense Engineer</strong>
-                    BeyondTrust
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/jumio-machine-learning-engineer-iv-fraud" target="_blank" rel="noopener">
-                    <strong>Machine Learning Engineer - IV (Fraud)</strong>
-                    Jumio
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/affirm-analyst" target="_blank" rel="noopener">
-                    <strong>Analyst</strong>
-                    Affirm
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/beyondtrust-cloud-engineer" target="_blank" rel="noopener">
-                    <strong>Cloud Engineer</strong>
-                    BeyondTrust
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/wrike-senior-data-scientist" target="_blank" rel="noopener">
-                    <strong>Senior Data Scientist</strong>
-                    Wrike
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/assemblyai-senior-research-engineer" target="_blank" rel="noopener">
-                    <strong>Senior Research Engineer</strong>
-                    AssemblyAI
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/assemblyai-senior-gtm-ai-engineer" target="_blank" rel="noopener">
-                    <strong>Senior GTM AI Engineer</strong>
-                    AssemblyAI
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/bondex-fullstack-web3-engineer-solidity-rust-typescript" target="_blank" rel="noopener">
-                    <strong>Fullstack Web3 Engineer (Solidity / Rust / Typescript)</strong>
-                    bondex
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/proxify-ab-senior-backend-developer-python-10" target="_blank" rel="noopener">
-                    <strong>Senior Backend Developer (Python)</strong>
-                    Proxify AB
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/dremio-software-engineer-developer-experience" target="_blank" rel="noopener">
-                    <strong>Software Engineer - Developer Experience</strong>
-                    Dremio
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/steuart-nutrition-software-developer-ai-coding" target="_blank" rel="noopener">
-                    <strong>Software Developer AI Coding</strong>
-                    STEUART NUTRITION
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/hex-technologies-cloud-security-engineer" target="_blank" rel="noopener">
-                    <strong>Cloud Security Engineer</strong>
-                    Hex Technologies
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/samsara-staff-software-engineer" target="_blank" rel="noopener">
-                    <strong>Staff Software Engineer</strong>
-                    Samsara
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/toptal-senior-data-engineer-aws-data-lake-pipeline-architecture" target="_blank" rel="noopener">
-                    <strong>Senior Data Engineer – AWS Data Lake &amp; Pipeline Architecture </strong>
-                    Toptal
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/jumio-machine-learning-engineer-iv-computer-vision" target="_blank" rel="noopener">
-                    <strong>Machine Learning Engineer - IV (Computer Vision)</strong>
-                    Jumio
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/lemon-io-senior-react-full-stack-developer-7" target="_blank" rel="noopener">
-                    <strong>Senior React Full-stack Developer</strong>
-                    Lemon.io
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/lemon-io-senior-net-full-stack-developer-2" target="_blank" rel="noopener">
-                    <strong>Senior .NET Full-stack Developer</strong>
-                    Lemon.io
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/jumio-machine-learning-engineer-iv-biometrics" target="_blank" rel="noopener">
-                    <strong>Machine Learning Engineer - IV (Biometrics)</strong>
-                    Jumio
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/jumio-machine-learning-engineer" target="_blank" rel="noopener">
-                    <strong>Machine Learning Engineer</strong>
-                    Jumio
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/coinbase-analyst-privacy" target="_blank" rel="noopener">
-                    <strong>Analyst, Privacy</strong>
-                    Coinbase
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/lemon-io-senior-angular-full-stack-developer" target="_blank" rel="noopener">
-                    <strong>Senior Angular Full-stack Developer</strong>
-                    Lemon.io
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/launchdarkly-backend-engineer-multiple-positions" target="_blank" rel="noopener">
-                    <strong>Backend Engineer (Multiple Positions)</strong>
-                    LaunchDarkly
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/stripe-abuse-research-engineer" target="_blank" rel="noopener">
-                    <strong>Abuse Research Engineer</strong>
-                    Stripe
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/doximity-commercial-data-scientist" target="_blank" rel="noopener">
-                    <strong>Commercial Data Scientist</strong>
-                    Doximity
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/salesloft-principal-software-engineer-ai" target="_blank" rel="noopener">
-                    <strong>Principal Software Engineer, AI</strong>
-                    Salesloft
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/lithic-senior-software-engineer-card-authorization" target="_blank" rel="noopener">
-                    <strong>Senior Software Engineer, Card Authorization</strong>
-                    Lithic
-                </a>
-            
-        
-    </main>
+        </header>
+        <main>
+            
+            <section class="hero">
+                <h1 class="big"><span>python</span></h1>
+                <p class="summary" id="summary" data-total="82">82 jobs across three job boards</p>
+            </section>
+
+            <div class="sources">
+                <div class="bar" aria-hidden="true">
+                    
+                        <span style="flex-grow: 4; background: var(--source-1)"></span>
+                    
+                        <span style="flex-grow: 45; background: var(--source-2)"></span>
+                    
+                        <span style="flex-grow: 33; background: var(--source-3)"></span>
+                    
+                </div>
+                <ul class="legend">
+                    
+                        <li><a href="#berlin-startup-jobs"><span class="swatch" style="background: var(--source-1)"></span>Berlin Startup Jobs<b>4</b></a></li>
+                    
+                        <li><a href="#web3-career"><span class="swatch" style="background: var(--source-2)"></span>Web3 Career<b>45</b></a></li>
+                    
+                        <li><a href="#we-work-remotely"><span class="swatch" style="background: var(--source-3)"></span>We Work Remotely<b>33</b></a></li>
+                    
+                </ul>
+            </div>
+
+            <div class="filter">
+                <label for="filter">Filter these jobs</label>
+                <input id="filter" type="search" placeholder="Title or company" autocomplete="off">
+            </div>
+
+            
+                <section class="site" id="berlin-startup-jobs">
+                    <h2><span class="swatch" style="background: var(--source-1)"></span>Berlin Startup Jobs<span class="count">4</span></h2>
+                    <ul class="jobs">
+                        
+                            <li class="job">
+                                <a href="https://berlinstartupjobs.com/engineering/senior-backend-developer-golang-m-f-d-datatroniq/" target="_blank" rel="noopener">
+                                    <span class="title">Senior Backend Developer – Go &amp; Kubernetes</span>
+                                    <span class="company">DATATRONiQ</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://berlinstartupjobs.com/engineering/senior-data-scientist-datatroniq/" target="_blank" rel="noopener">
+                                    <span class="title">Senior Data Scientist – Python, ML &amp; Signal-Processing</span>
+                                    <span class="company">DATATRONiQ</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://berlinstartupjobs.com/engineering/senior-fullstack-developer-typescript-javascript-node-js-datatroniq/" target="_blank" rel="noopener">
+                                    <span class="title">Senior Frontend Developer – TypeScript, React &amp; Design-Gespür</span>
+                                    <span class="company">DATATRONiQ</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://berlinstartupjobs.com/engineering/senior-full-stack-developer-data-scientist-remote-friendly-aidar/" target="_blank" rel="noopener">
+                                    <span class="title">Senior Full-Stack Developer / Data Scientist (remote-friendly)</span>
+                                    <span class="company">AIDAR</span>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <p class="none" data-empty="No python jobs on Berlin Startup Jobs right now." hidden>No python jobs on Berlin Startup Jobs right now.</p>
+                </section>
+            
+                <section class="site" id="web3-career">
+                    <h2><span class="swatch" style="background: var(--source-2)"></span>Web3 Career<span class="count">45</span></h2>
+                    <ul class="jobs">
+                        
+                            <li class="job">
+                                <a href="https://web3.career/robotics-lead-telegraph/155257" target="_blank" rel="noopener">
+                                    <span class="title">Robotics Lead</span>
+                                    <span class="company">Telegraph</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/staff-software-engineer-ai-security-go-rust-python-zscaler/153659" target="_blank" rel="noopener">
+                                    <span class="title">Staff Software Engineer AI Security Go Rust Python</span>
+                                    <span class="company">Zscaler</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/software-engineer-rust-python-asset-pricing-hedging-bitpanda/150010" target="_blank" rel="noopener">
+                                    <span class="title">Software Engineer Rust Python Asset Pricing Hedging</span>
+                                    <span class="company">Bitpanda</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/python-engineer-asset-pricing-hedging-bitpanda/103283" target="_blank" rel="noopener">
+                                    <span class="title">Python Engineer Asset Pricing Hedging</span>
+                                    <span class="company">Bitpanda</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/software-engineer-python-asset-pricing-hedging-bitpanda/149554" target="_blank" rel="noopener">
+                                    <span class="title">Software Engineer Python Asset Pricing Hedging</span>
+                                    <span class="company">Bitpanda</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-qa-engineer-exploratory-python-trading-technologies-binance/150664" target="_blank" rel="noopener">
+                                    <span class="title">Senior QA Engineer Exploratory Python Trading Technologies</span>
+                                    <span class="company">Binance</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-software-development-engineer-in-test-automation-python-trading-technologies-binance/150607" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Development Engineer in Test Automation Python Trading Technologies</span>
+                                    <span class="company">Binance</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/it-junior-python-developer-london-b2c2/144971" target="_blank" rel="noopener">
+                                    <span class="title">IT Junior Python Developer London</span>
+                                    <span class="company">B2c2</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-software-engineer-python-asset-pricing-hedging-bitpanda/101436" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Engineer Python Asset Pricing Hedging</span>
+                                    <span class="company">Bitpanda</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/software-developer-python-dv-equities-dvtrading/149355" target="_blank" rel="noopener">
+                                    <span class="title">Software Developer Python DV Equities</span>
+                                    <span class="company">Dvtrading</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-solutions-engineer-api-python-node-js-binance/148589" target="_blank" rel="noopener">
+                                    <span class="title">Senior Solutions Engineer API Python Node.JS</span>
+                                    <span class="company">Binance</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-api-solutions-engineer-python-node-js-binance/146936" target="_blank" rel="noopener">
+                                    <span class="title">Senior API Solutions Engineer Python Node.JS</span>
+                                    <span class="company">Binance</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/jr-mid-python-developer-accounting-team-b2c2/138510" target="_blank" rel="noopener">
+                                    <span class="title">JrMid Python Developer Accounting Team</span>
+                                    <span class="company">B2c2</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/lead-python-developer-defi-infrastructure-connecthum/145672" target="_blank" rel="noopener">
+                                    <span class="title">Lead Python Developer DeFi Infrastructure</span>
+                                    <span class="company">ConnectHum</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/security-engineer-python-binance/144925" target="_blank" rel="noopener">
+                                    <span class="title">Security Engineer Python</span>
+                                    <span class="company">Binance</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/principal-software-engineer-backend-python-golang-zscaler/143950" target="_blank" rel="noopener">
+                                    <span class="title">Principal Software Engineer Backend Python Golang</span>
+                                    <span class="company">Zscaler</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/software-engineer-python-institutional-blockchain/143870" target="_blank" rel="noopener">
+                                    <span class="title">Software Engineer Python Institutional</span>
+                                    <span class="company">Blockchain</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/backend-engineer-python-node-js-crypto-com/143612" target="_blank" rel="noopener">
+                                    <span class="title">Backend Engineer Python Node.js</span>
+                                    <span class="company">Crypto.com</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/back-end-engineer-python-bluecubeservices/142937" target="_blank" rel="noopener">
+                                    <span class="title">BackEnd Engineer Python</span>
+                                    <span class="company">Bluecubeservices</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/quantitative-developer-c-java-go-python-coins/142903" target="_blank" rel="noopener">
+                                    <span class="title">Quantitative Developer C++ Java Go Python</span>
+                                    <span class="company">Coins.ph</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/data-engineer-python-bitpanda/141465" target="_blank" rel="noopener">
+                                    <span class="title">Data Engineer Python</span>
+                                    <span class="company">Bitpanda</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/binance-accelerator-program-infrastructure-security-python-llm-binance/141232" target="_blank" rel="noopener">
+                                    <span class="title">Binance Accelerator Program Infrastructure Security Python LLM</span>
+                                    <span class="company">Binance</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/software-engineer-python-go-data-backend-kronosresearch/140542" target="_blank" rel="noopener">
+                                    <span class="title">Software Engineer Python Go Data+Backend</span>
+                                    <span class="company">Kronosresearch</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/fullstack-engineer-web3-react-node-python-hotstufflabs/140432" target="_blank" rel="noopener">
+                                    <span class="title">Fullstack EngineerWeb3 React Node Python</span>
+                                    <span class="company">Hotstuff Labs</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-software-engineer-full-stack-django-android-ai-fully-remote-dorbeleitconsulting/139621" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Engineer FullStack Django Android AI Fully Remote</span>
+                                    <span class="company">dorbeleitconsulting</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/python-engineer-blockchain-team-wallet/133737" target="_blank" rel="noopener">
+                                    <span class="title">Python Engineer Blockchain team</span>
+                                    <span class="company">Wallet</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-qa-engineer-exploratory-python-trading-tech-binance/116412" target="_blank" rel="noopener">
+                                    <span class="title">Senior QA Engineer Exploratory Python Trading Tech</span>
+                                    <span class="company">Binance</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/contract-senior-backend-developer-python-themotleyfool/112026" target="_blank" rel="noopener">
+                                    <span class="title">Contract Senior Backend Developer Python</span>
+                                    <span class="company">Themotleyfool</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/python-blockchain-developer-scionstaffing/111268" target="_blank" rel="noopener">
+                                    <span class="title">Python Blockchain Developer</span>
+                                    <span class="company">Scion Staffing</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/backend-engineer-python-web3-bitpanda/104560" target="_blank" rel="noopener">
+                                    <span class="title">Backend Engineer Python Web3</span>
+                                    <span class="company">Bitpanda</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/devops-engineer-aws-python-bitpanda/107336" target="_blank" rel="noopener">
+                                    <span class="title">DevOps Engineer AWS Python</span>
+                                    <span class="company">Bitpanda</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/software-engineer-python-web3-bitpanda/107801" target="_blank" rel="noopener">
+                                    <span class="title">Software Engineer Python Web3</span>
+                                    <span class="company">Bitpanda</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-python-developer-exchange-middle-and-back-office-crypto-com/107851" target="_blank" rel="noopener">
+                                    <span class="title">Senior Python Developer Exchange Middle and Back office</span>
+                                    <span class="company">Crypto.com</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-backend-engineer-python-solidity-smart-contracts-bitpanda/106868" target="_blank" rel="noopener">
+                                    <span class="title">Senior Backend Engineer Python Solidity Smart Contracts</span>
+                                    <span class="company">Bitpanda</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/python-developer-launchpadtechnologiesinc/73690" target="_blank" rel="noopener">
+                                    <span class="title">Python Developer</span>
+                                    <span class="company">Launchpadtechnologiesinc</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/staff-software-development-engineer-python-automation-networking-zscaler/106749" target="_blank" rel="noopener">
+                                    <span class="title">Staff Software Development EngineerPython Automation Networking</span>
+                                    <span class="company">Zscaler</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/full-stack-python-developer-cloud-iot-blockchain-agile-expertise-synechron/104974" target="_blank" rel="noopener">
+                                    <span class="title">Full Stack Python Developer Cloud IoT Blockchain Agile Expertise</span>
+                                    <span class="company">Synechron</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/python-soft-engineer-junior-mid-ai-agents-crypto-almanak/104668" target="_blank" rel="noopener">
+                                    <span class="title">Python Soft. Engineer JuniorMid AI Agents Crypto</span>
+                                    <span class="company">Almanak</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/principal-software-engineer-rust-python-fmr/104658" target="_blank" rel="noopener">
+                                    <span class="title">Principal Software Engineer RUST Python</span>
+                                    <span class="company">Fmr</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-python-engineer-jimmytechnologies/103826" target="_blank" rel="noopener">
+                                    <span class="title">Senior Python Engineer</span>
+                                    <span class="company">Jimmy Technologies</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/staff-software-development-engineer-python-automation-zscaler/103743" target="_blank" rel="noopener">
+                                    <span class="title">Staff Software Development Engineer Python Automation</span>
+                                    <span class="company">Zscaler</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/python-engineer-wallet/102131" target="_blank" rel="noopener">
+                                    <span class="title">Python Engineer</span>
+                                    <span class="company">Wallet</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-python-engineer-wallet/102084" target="_blank" rel="noopener">
+                                    <span class="title">Senior Python Engineer</span>
+                                    <span class="company">Wallet</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/python-developer-with-blockchain-daml-or-solidity-phaxis/101070" target="_blank" rel="noopener">
+                                    <span class="title">Python Developer with Blockchain DAML or Solidity</span>
+                                    <span class="company">Phaxis</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-backend-engineer-python-pricing-hedging-services-bitpanda/83648" target="_blank" rel="noopener">
+                                    <span class="title">Senior Backend Engineer Python Pricing Hedging Services</span>
+                                    <span class="company">Bitpanda</span>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <p class="none" data-empty="No python jobs on Web3 Career right now." hidden>No python jobs on Web3 Career right now.</p>
+                </section>
+            
+                <section class="site" id="we-work-remotely">
+                    <h2><span class="swatch" style="background: var(--source-3)"></span>We Work Remotely<span class="count">33</span></h2>
+                    <ul class="jobs">
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/aitrainers-remote-ai-trainers-generalist-and-python-coding-experts" target="_blank" rel="noopener">
+                                    <span class="title">Remote AI Trainers (Generalist and Python Coding Experts)</span>
+                                    <span class="company">AITrainers</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/databricks-deployment-strategist" target="_blank" rel="noopener">
+                                    <span class="title">Deployment Strategist</span>
+                                    <span class="company">Databricks</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/databricks-delivery-solutions-architect-startups-emerging-enterprise" target="_blank" rel="noopener">
+                                    <span class="title">Delivery Solutions Architect - Startups &amp; Emerging Enterprise</span>
+                                    <span class="company">Databricks</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/elation-health-case-resolution-engineer" target="_blank" rel="noopener">
+                                    <span class="title">Case Resolution Engineer</span>
+                                    <span class="company">Elation Health</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/toptal-applied-ai-engineers-for-telecommunications-company" target="_blank" rel="noopener">
+                                    <span class="title">Applied AI Engineers for telecommunications company</span>
+                                    <span class="company">Toptal</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/toptal-apigee-engineer-for-global-consumer-food-company" target="_blank" rel="noopener">
+                                    <span class="title">Apigee Engineer for Global Consumer Food Company</span>
+                                    <span class="company">Toptal</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/toptal-full-stack-e-commerce-developer-with-sage-x3-experience" target="_blank" rel="noopener">
+                                    <span class="title">Full-Stack E-commerce Developer with Sage X3 Experience</span>
+                                    <span class="company">Toptal</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/beyondtrust-cyber-defense-engineer" target="_blank" rel="noopener">
+                                    <span class="title">Cyber Defense Engineer</span>
+                                    <span class="company">BeyondTrust</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/jumio-machine-learning-engineer-iv-fraud" target="_blank" rel="noopener">
+                                    <span class="title">Machine Learning Engineer - IV (Fraud)</span>
+                                    <span class="company">Jumio</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/affirm-analyst" target="_blank" rel="noopener">
+                                    <span class="title">Analyst</span>
+                                    <span class="company">Affirm</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/beyondtrust-cloud-engineer" target="_blank" rel="noopener">
+                                    <span class="title">Cloud Engineer</span>
+                                    <span class="company">BeyondTrust</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/wrike-senior-data-scientist" target="_blank" rel="noopener">
+                                    <span class="title">Senior Data Scientist</span>
+                                    <span class="company">Wrike</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/assemblyai-senior-research-engineer" target="_blank" rel="noopener">
+                                    <span class="title">Senior Research Engineer</span>
+                                    <span class="company">AssemblyAI</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/assemblyai-senior-gtm-ai-engineer" target="_blank" rel="noopener">
+                                    <span class="title">Senior GTM AI Engineer</span>
+                                    <span class="company">AssemblyAI</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/bondex-fullstack-web3-engineer-solidity-rust-typescript" target="_blank" rel="noopener">
+                                    <span class="title">Fullstack Web3 Engineer (Solidity / Rust / Typescript)</span>
+                                    <span class="company">bondex</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/proxify-ab-senior-backend-developer-python-10" target="_blank" rel="noopener">
+                                    <span class="title">Senior Backend Developer (Python)</span>
+                                    <span class="company">Proxify AB</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/dremio-software-engineer-developer-experience" target="_blank" rel="noopener">
+                                    <span class="title">Software Engineer - Developer Experience</span>
+                                    <span class="company">Dremio</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/steuart-nutrition-software-developer-ai-coding" target="_blank" rel="noopener">
+                                    <span class="title">Software Developer AI Coding</span>
+                                    <span class="company">STEUART NUTRITION</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/hex-technologies-cloud-security-engineer" target="_blank" rel="noopener">
+                                    <span class="title">Cloud Security Engineer</span>
+                                    <span class="company">Hex Technologies</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/samsara-staff-software-engineer" target="_blank" rel="noopener">
+                                    <span class="title">Staff Software Engineer</span>
+                                    <span class="company">Samsara</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/toptal-senior-data-engineer-aws-data-lake-pipeline-architecture" target="_blank" rel="noopener">
+                                    <span class="title">Senior Data Engineer – AWS Data Lake &amp; Pipeline Architecture </span>
+                                    <span class="company">Toptal</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/jumio-machine-learning-engineer-iv-computer-vision" target="_blank" rel="noopener">
+                                    <span class="title">Machine Learning Engineer - IV (Computer Vision)</span>
+                                    <span class="company">Jumio</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/lemon-io-senior-react-full-stack-developer-7" target="_blank" rel="noopener">
+                                    <span class="title">Senior React Full-stack Developer</span>
+                                    <span class="company">Lemon.io</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/lemon-io-senior-net-full-stack-developer-2" target="_blank" rel="noopener">
+                                    <span class="title">Senior .NET Full-stack Developer</span>
+                                    <span class="company">Lemon.io</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/jumio-machine-learning-engineer-iv-biometrics" target="_blank" rel="noopener">
+                                    <span class="title">Machine Learning Engineer - IV (Biometrics)</span>
+                                    <span class="company">Jumio</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/jumio-machine-learning-engineer" target="_blank" rel="noopener">
+                                    <span class="title">Machine Learning Engineer</span>
+                                    <span class="company">Jumio</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/coinbase-analyst-privacy" target="_blank" rel="noopener">
+                                    <span class="title">Analyst, Privacy</span>
+                                    <span class="company">Coinbase</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/lemon-io-senior-angular-full-stack-developer" target="_blank" rel="noopener">
+                                    <span class="title">Senior Angular Full-stack Developer</span>
+                                    <span class="company">Lemon.io</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/launchdarkly-backend-engineer-multiple-positions" target="_blank" rel="noopener">
+                                    <span class="title">Backend Engineer (Multiple Positions)</span>
+                                    <span class="company">LaunchDarkly</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/stripe-abuse-research-engineer" target="_blank" rel="noopener">
+                                    <span class="title">Abuse Research Engineer</span>
+                                    <span class="company">Stripe</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/doximity-commercial-data-scientist" target="_blank" rel="noopener">
+                                    <span class="title">Commercial Data Scientist</span>
+                                    <span class="company">Doximity</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/salesloft-principal-software-engineer-ai" target="_blank" rel="noopener">
+                                    <span class="title">Principal Software Engineer, AI</span>
+                                    <span class="company">Salesloft</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/lithic-senior-software-engineer-card-authorization" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Engineer, Card Authorization</span>
+                                    <span class="company">Lithic</span>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <p class="none" data-empty="No python jobs on We Work Remotely right now." hidden>No python jobs on We Work Remotely right now.</p>
+                </section>
+            
+
+        </main>
+        <footer class="footer">
+            <p>Jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, last updated October 14, 2026. <a href="https://github.com/wonsik99/Intro-to-python-scraper">Source code on GitHub</a></p>
+        </footer>
+    </div>
+    
+    <script>
+        const keyword = "python";
+        const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        // Same whole-word rule as the scraper, so "java" doesn't match "javascript"
+        const pattern = new RegExp(`(?<!\\w)(${escaped})(?!\\w)`, "gi");
+
+        // Highlight the skill inside each job title
+        document.querySelectorAll(".title").forEach((title) => {
+            const parts = title.textContent.split(pattern);
+            if (parts.length === 1) return;
+            title.replaceChildren(...parts.map((part, index) => {
+                if (index % 2 === 0) return part;
+                const mark = document.createElement("mark");
+                mark.textContent = part;
+                return mark;
+            }));
+        });
+
+        // Filter the list as you type
+        const filter = document.getElementById("filter");
+        const summary = document.getElementById("summary");
+        const defaultSummary = summary.textContent;
+
+        filter.addEventListener("input", () => {
+            const query = filter.value.trim();
+            let shown = 0;
+            document.querySelectorAll(".site").forEach((site) => {
+                const jobs = site.querySelectorAll(".job");
+                let visible = 0;
+                jobs.forEach((job) => {
+                    const matches = job.textContent.toLowerCase().includes(query.toLowerCase());
+                    job.hidden = !matches;
+                    if (matches) visible += 1;
+                });
+                const none = site.querySelector(".none");
+                none.hidden = visible > 0;
+                none.textContent = query && jobs.length ? `Nothing here matches "${query}".` : none.dataset.empty;
+                site.querySelector(".count").textContent = visible;
+                shown += visible;
+            });
+            summary.textContent = query ? `${shown} of ${summary.dataset.total} jobs match "${query}"` : defaultSummary;
+        });
+    </script>
+
 </body>
 </html>

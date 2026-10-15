@@ -3,301 +3,625 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="Developer jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, searched by skill.">
     <title>rust jobs | Job Scrapper</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='10' width='28' height='13' rx='3' fill='%23ffe24a'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
     <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f6f8; color: #1f2328; }
-        main { max-width: 760px; margin: 48px auto; padding: 0 16px; }
-        header { text-align: center; }
-        header p { color: #59636e; }
-        a { color: #0969da; }
-        h2 { margin-top: 40px; padding-bottom: 8px; border-bottom: 2px solid #d0d7de; font-size: 20px; }
-        h2 span { color: #59636e; font-weight: normal; }
-        .job { display: block; margin: 12px 0; padding: 16px; border: 1px solid #d0d7de; border-radius: 8px; background: white; color: #59636e; text-decoration: none; }
-        .job:hover { border-color: #0969da; }
-        .job strong { display: block; margin-bottom: 4px; color: #0969da; }
-        .empty { color: #59636e; }
+        /* Highlighter yellow always means "this matches your skill" */
+        :root {
+            --paper: #ffffff;
+            --ink: #18224b;
+            --muted: #5e6787;
+            --rule: #dce0ec;
+            --marker: #ffe24a;
+            --hl-bg: var(--marker);
+            --hl-text: var(--ink);
+            --hover-thickness: 0.45em;
+            --hover-offset: -0.3em;
+            --source-1: #18224b;
+            --source-2: #6b76b5;
+            --source-3: #b9c0e3;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #10163a;
+                --ink: #eef0f8;
+                --muted: #a3aac8;
+                --rule: #2a3366;
+                --hl-bg: transparent;
+                --hl-text: var(--marker);
+                --hover-thickness: 2px;
+                --hover-offset: 5px;
+                --source-1: #eef0f8;
+                --source-2: #9ea8d8;
+                --source-3: #4e5a94;
+            }
+        }
+        * { box-sizing: border-box; }
+        [hidden] { display: none !important; }
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: "Archivo", system-ui, sans-serif;
+            font-size: 18px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: inherit; }
+        :focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
+        .page { max-width: 1120px; margin: 0 auto; padding: 28px 24px 56px; }
+        .top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; }
+        .wordmark { font-size: 19px; font-weight: 800; font-stretch: 75%; text-decoration: none; }
+        .big { font-weight: 900; font-stretch: 62%; line-height: 0.9; letter-spacing: -0.01em; }
+        .footer { max-width: 760px; margin-top: 112px; padding-top: 20px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 15px; }
+        .footer p { margin: 0; }
+        .footer a { color: var(--ink); }
+        @media (max-width: 600px) {
+            body { font-size: 17px; }
+            .page { padding: 20px 16px 48px; }
+            .footer { margin-top: 80px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+        
+        .skill-nav { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 16px; }
+        .skill-nav a { color: var(--muted); text-decoration: none; }
+        .skill-nav a:hover { color: var(--ink); }
+        .skill-nav a[aria-current] { color: var(--hl-text); background: var(--hl-bg); padding: 0 4px; }
+        .hero { margin-top: 64px; }
+        .hero h1 { margin: 0; font-size: clamp(76px, 17vw, 208px); overflow-wrap: anywhere; }
+        .hero h1 span {
+            padding: 0 0.04em;
+            background-image: linear-gradient(var(--hl-bg), var(--hl-bg));
+            background-repeat: no-repeat;
+            background-position: 0 72%;
+            background-size: 100% 48%;
+            color: var(--hl-text);
+            -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
+            animation: draw 0.7s 0.2s ease-out both;
+        }
+        @keyframes draw { from { background-size: 0% 48%; } }
+        .summary { margin: 32px 0 0; color: var(--muted); font-size: 21px; }
+        .sources, .filter, .site { max-width: 760px; }
+        .sources { margin-top: 40px; }
+        .bar { display: flex; gap: 3px; height: 12px; }
+        .bar span { flex-basis: 0; border-radius: 2px; }
+        .legend { display: flex; flex-wrap: wrap; gap: 6px 24px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 15px; }
+        .legend a { color: var(--muted); text-decoration: none; }
+        .legend a:hover { color: var(--ink); }
+        .legend b { margin-left: 4px; color: var(--ink); }
+        .swatch { display: inline-block; width: 10px; height: 10px; margin-right: 8px; border-radius: 2px; }
+        .filter { margin-top: 48px; }
+        .filter label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 15px; }
+        .filter input {
+            width: 100%;
+            padding: 8px 0;
+            border: 0;
+            border-bottom: 2px solid var(--rule);
+            border-radius: 0;
+            background: transparent;
+            color: var(--ink);
+            font: inherit;
+            font-size: 20px;
+        }
+        .filter input:focus-visible { outline: none; border-bottom-color: var(--ink); }
+        .site { margin-top: 64px; scroll-margin-top: 24px; }
+        .site h2 { display: flex; align-items: center; margin: 0 0 4px; font-size: 28px; font-weight: 800; font-stretch: 75%; line-height: 1.2; }
+        .site h2 .count { margin-left: 12px; color: var(--muted); font-size: 18px; font-weight: 500; font-stretch: 100%; }
+        .jobs { margin: 0; padding: 0; list-style: none; }
+        .job, .none { border-bottom: 1px solid var(--rule); }
+        .job a { display: block; padding: 14px 0; text-decoration: none; }
+        .title { display: block; font-size: 19px; font-weight: 600; line-height: 1.35; }
+        .company { display: block; margin-top: 2px; color: var(--muted); font-size: 15px; }
+        .job a:hover .title {
+            text-decoration: underline;
+            text-decoration-color: var(--marker);
+            text-decoration-thickness: var(--hover-thickness);
+            text-underline-offset: var(--hover-offset);
+            text-decoration-skip-ink: none;
+        }
+        mark { padding: 0 0.06em; background: linear-gradient(transparent 38%, var(--hl-bg) 38%, var(--hl-bg) 92%, transparent 92%); color: var(--hl-text); }
+        .none { margin: 0; padding: 14px 0; color: var(--muted); }
+
     </style>
 </head>
 <body>
-    <main>
-        <header>
-            <h1>Results for "rust"</h1>
-            <p>52 jobs · updated 2026-10-14</p>
-            <a href="../../">← Search again</a>
-        </header>
+    <div class="page">
+        <header class="top">
+            <a class="wordmark" href="../../">Job Scrapper</a>
+            
+        <nav class="skill-nav" aria-label="Skills">
+            
+                <a href="../python/" >python</a>
+            
+                <a href="../typescript/" >typescript</a>
+            
+                <a href="../javascript/" >javascript</a>
+            
+                <a href="../rust/" aria-current="page">rust</a>
+            
+        </nav>
 
-        
-            <h2>Berlin Startup Jobs <span>(0)</span></h2>
+        </header>
+        <main>
             
-                <p class="empty">No jobs found</p>
+            <section class="hero">
+                <h1 class="big"><span>rust</span></h1>
+                <p class="summary" id="summary" data-total="52">52 jobs across three job boards</p>
+            </section>
+
+            <div class="sources">
+                <div class="bar" aria-hidden="true">
+                    
+                        
+                    
+                        <span style="flex-grow: 45; background: var(--source-2)"></span>
+                    
+                        <span style="flex-grow: 7; background: var(--source-3)"></span>
+                    
+                </div>
+                <ul class="legend">
+                    
+                        <li><a href="#berlin-startup-jobs"><span class="swatch" style="background: var(--source-1)"></span>Berlin Startup Jobs<b>0</b></a></li>
+                    
+                        <li><a href="#web3-career"><span class="swatch" style="background: var(--source-2)"></span>Web3 Career<b>45</b></a></li>
+                    
+                        <li><a href="#we-work-remotely"><span class="swatch" style="background: var(--source-3)"></span>We Work Remotely<b>7</b></a></li>
+                    
+                </ul>
+            </div>
+
+            <div class="filter">
+                <label for="filter">Filter these jobs</label>
+                <input id="filter" type="search" placeholder="Title or company" autocomplete="off">
+            </div>
+
             
-        
-            <h2>Web3 Career <span>(45)</span></h2>
+                <section class="site" id="berlin-startup-jobs">
+                    <h2><span class="swatch" style="background: var(--source-1)"></span>Berlin Startup Jobs<span class="count">0</span></h2>
+                    <ul class="jobs">
+                        
+                    </ul>
+                    <p class="none" data-empty="No rust jobs on Berlin Startup Jobs right now." >No rust jobs on Berlin Startup Jobs right now.</p>
+                </section>
             
-                <a class="job" href="https://web3.career/blockchain-platforms-engineer-coreaiconsultinginc/155418" target="_blank" rel="noopener">
-                    <strong>Blockchain Platms Engineer</strong>
-                    Core AI Consulting Inc
-                </a>
+                <section class="site" id="web3-career">
+                    <h2><span class="swatch" style="background: var(--source-2)"></span>Web3 Career<span class="count">45</span></h2>
+                    <ul class="jobs">
+                        
+                            <li class="job">
+                                <a href="https://web3.career/blockchain-platforms-engineer-coreaiconsultinginc/155418" target="_blank" rel="noopener">
+                                    <span class="title">Blockchain Platms Engineer</span>
+                                    <span class="company">Core AI Consulting Inc</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/crypto-production-engineer-jumpcrypto/89562" target="_blank" rel="noopener">
+                                    <span class="title">Crypto Production Engineer</span>
+                                    <span class="company">Jumpcrypto</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/quant-developer-gsrmarkets/154269" target="_blank" rel="noopener">
+                                    <span class="title">Quant Developer</span>
+                                    <span class="company">Gsrmarkets</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-low-latency-engineer-gsrmarkets/154728" target="_blank" rel="noopener">
+                                    <span class="title">Senior Low Latency Engineer</span>
+                                    <span class="company">Gsrmarkets</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-software-engineer-market-data-alpaca/99655" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Engineer Market Data</span>
+                                    <span class="company">Alpaca</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-back-end-engineer-trading-platform-blockchain/98044" target="_blank" rel="noopener">
+                                    <span class="title">Senior BackEnd Engineer Trading Platm</span>
+                                    <span class="company">Blockchain</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/sr-software-engineer-blockchain-charlesschwab/155353" target="_blank" rel="noopener">
+                                    <span class="title">Sr Software Engineer Blockchain</span>
+                                    <span class="company">Charles Schwab</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/blockchain-engineer-architect-crypto-specialist-cafemomentumpittsburgh/155188" target="_blank" rel="noopener">
+                                    <span class="title">Blockchain Engineer Architect Crypto Specialist</span>
+                                    <span class="company">Café Momentum Pittsburgh</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/founding-software-engineer-equanetwork/155132" target="_blank" rel="noopener">
+                                    <span class="title">Founding Software Engineer</span>
+                                    <span class="company">Equa Network</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/digital-assets-blockchain-engineer-thedepositorytrust-amp-clearingcorporation-dtcc/155122" target="_blank" rel="noopener">
+                                    <span class="title">Digital Assets Blockchain Engineer</span>
+                                    <span class="company">The Depository Trust &amp;amp; Clearing Corporation (DTCC)</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/solutions-architect-us-blockdaemon/155102" target="_blank" rel="noopener">
+                                    <span class="title">Solutions Architect US</span>
+                                    <span class="company">Blockdaemon</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-security-engineer-product-infrastructure-squads/155069" target="_blank" rel="noopener">
+                                    <span class="title">Senior Security Engineer Product Infrastructure</span>
+                                    <span class="company">Squads</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/binance-accelerator-program-system-performance-engineer-ai-binance/155064" target="_blank" rel="noopener">
+                                    <span class="title">Binance Accelerator Program System Permance Engineer AI</span>
+                                    <span class="company">Binance</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-blockchain-engineer-banking-integrations-globalsettlementnetwork/155058" target="_blank" rel="noopener">
+                                    <span class="title">Senior Blockchain Engineer Banking Integrations</span>
+                                    <span class="company">Global Settlement Network</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/blockchain-engineer-globalsettlementnetwork/155057" target="_blank" rel="noopener">
+                                    <span class="title">Blockchain Engineer</span>
+                                    <span class="company">Global Settlement Network</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/enterprise-blockchain-architect-digital-assets-tokenization-maximaconsulting/155026" target="_blank" rel="noopener">
+                                    <span class="title">Enterprise Blockchain Architect Digital Assets Tokenization</span>
+                                    <span class="company">Maxima Consulting</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/rust-developer-exchange-os-trading-engine-okx/155006" target="_blank" rel="noopener">
+                                    <span class="title">Rust Developer Exchange OS Trading Engine</span>
+                                    <span class="company">Okx</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-security-engineer-product-jitolabs/154895" target="_blank" rel="noopener">
+                                    <span class="title">Senior Security Engineer Product</span>
+                                    <span class="company">Jito Labs</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/platform-engineer-infrastructure-helius/154765" target="_blank" rel="noopener">
+                                    <span class="title">Platm Engineer Infrastructure</span>
+                                    <span class="company">Helius</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-software-engineer-go-rust-blockchain-infrastructure-quicknode/154763" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Engineer Go Rust Blockchain Infrastructure</span>
+                                    <span class="company">QuickNode</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/blockchain-architect-full-stack-digital-assets-tokenization-maximaconsulting/154756" target="_blank" rel="noopener">
+                                    <span class="title">Blockchain Architect Full Stack – Digital Assets Tokenization</span>
+                                    <span class="company">Maxima Consulting</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-mobile-engineer-card-payment-okx/154735" target="_blank" rel="noopener">
+                                    <span class="title">Senior Mobile Engineer Card Payment</span>
+                                    <span class="company">Okx</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-software-engineer-rust-consumer-kraken/154721" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Engineer Rust Consumer</span>
+                                    <span class="company">Kraken</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/graduate-junior-software-engineer-elwoodtechnologies/154718" target="_blank" rel="noopener">
+                                    <span class="title">Graduate Junior Software Engineer</span>
+                                    <span class="company">Elwoodtechnologies</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/protocol-engineer-swissnexus/154661" target="_blank" rel="noopener">
+                                    <span class="title">Protocol Engineer</span>
+                                    <span class="company">Swiss Nexus</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/crypto-blockchain-architect-irissoftwareinc/154660" target="_blank" rel="noopener">
+                                    <span class="title">Crypto Blockchain Architect</span>
+                                    <span class="company">Iris Software Inc.</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-security-engineer-defi-mystenlabs/154607" target="_blank" rel="noopener">
+                                    <span class="title">Senior Security Engineer DeFi</span>
+                                    <span class="company">Mysten Labs</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-backend-engineer-offchainlabs/154583" target="_blank" rel="noopener">
+                                    <span class="title">Senior Backend Engineer</span>
+                                    <span class="company">Offchain</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-engineer-blockchain-platforms-coreaiconsultinginc/154564" target="_blank" rel="noopener">
+                                    <span class="title">Senior Engineer – Blockchain Platms</span>
+                                    <span class="company">Core AI Consulting Inc</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/graduate-software-engineer-blockchain-entry-level-bitofficial/154561" target="_blank" rel="noopener">
+                                    <span class="title">Graduate Software Engineer Blockchain EntryLevel</span>
+                                    <span class="company">BIT Official</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-programming-language-engineer-cadence-flowfoundation/154538" target="_blank" rel="noopener">
+                                    <span class="title">Senior Programming Language Engineer Cadence</span>
+                                    <span class="company">Flow Foundation</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-engineer-solana-r3/154536" target="_blank" rel="noopener">
+                                    <span class="title">Senior Engineer Solana</span>
+                                    <span class="company">R3</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-blockchain-engineer-settlement-globalsettlementnetwork/154529" target="_blank" rel="noopener">
+                                    <span class="title">Senior Blockchain Engineer Settlement</span>
+                                    <span class="company">Global Settlement Network</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-software-engineer-ccip-chainlinklabs/154527" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Engineer CCIP</span>
+                                    <span class="company">Chainlink Labs</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/quant-developer-rust-liquidity-platform-delta-one-systematic-trading-okx/145502" target="_blank" rel="noopener">
+                                    <span class="title">Quant Developer Rust Liquidity Platm Delta One Systematic Trading</span>
+                                    <span class="company">Okx</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/lead-engineer-frontier-traders-solanafoundation/154500" target="_blank" rel="noopener">
+                                    <span class="title">Lead Engineer Frontier Traders</span>
+                                    <span class="company">Solana Foundation</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/engineering-manager-growth-foundations-kraken/154486" target="_blank" rel="noopener">
+                                    <span class="title">Engineering Manager – Growth Foundations</span>
+                                    <span class="company">Kraken</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-software-engineer-react-native-business-services-kraken/154485" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Engineer React Native Business Services</span>
+                                    <span class="company">Kraken</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-solutions-architect-tokenisation-chainlinklabs/154479" target="_blank" rel="noopener">
+                                    <span class="title">Senior Solutions Architect Tokenisation</span>
+                                    <span class="company">Chainlink Labs</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/staff-software-engineer-margin-risk-alpaca/154477" target="_blank" rel="noopener">
+                                    <span class="title">Staff Software Engineer Margin Risk</span>
+                                    <span class="company">Alpaca</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-qa-engineer-rust-java-margin-binance/154461" target="_blank" rel="noopener">
+                                    <span class="title">Senior QA Engineer Rust Java Margin</span>
+                                    <span class="company">Binance</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/site-reliability-engineer-low-latency-trading-systems-ondofinance/154395" target="_blank" rel="noopener">
+                                    <span class="title">Site Reliability Engineer LowLatency Trading Systems</span>
+                                    <span class="company">Ondo Finance</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/blockchain-consultant-elementtechnologies/154331" target="_blank" rel="noopener">
+                                    <span class="title">Blockchain Consultant</span>
+                                    <span class="company">Element Technologies</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/head-of-onchain-engineering-mesh/154330" target="_blank" rel="noopener">
+                                    <span class="title">Head of Onchain Engineering</span>
+                                    <span class="company">Mesh</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://web3.career/senior-software-engineer-rust-core-services-kraken/154276" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Engineer Rust Core Services</span>
+                                    <span class="company">Kraken</span>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <p class="none" data-empty="No rust jobs on Web3 Career right now." hidden>No rust jobs on Web3 Career right now.</p>
+                </section>
             
-                <a class="job" href="https://web3.career/crypto-production-engineer-jumpcrypto/89562" target="_blank" rel="noopener">
-                    <strong>Crypto Production Engineer</strong>
-                    Jumpcrypto
-                </a>
+                <section class="site" id="we-work-remotely">
+                    <h2><span class="swatch" style="background: var(--source-3)"></span>We Work Remotely<span class="count">7</span></h2>
+                    <ul class="jobs">
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/assemblyai-senior-research-engineer" target="_blank" rel="noopener">
+                                    <span class="title">Senior Research Engineer</span>
+                                    <span class="company">AssemblyAI</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/bondex-fullstack-web3-engineer-solidity-rust-typescript" target="_blank" rel="noopener">
+                                    <span class="title">Fullstack Web3 Engineer (Solidity / Rust / Typescript)</span>
+                                    <span class="company">bondex</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/lemon-io-senior-react-full-stack-developer-7" target="_blank" rel="noopener">
+                                    <span class="title">Senior React Full-stack Developer</span>
+                                    <span class="company">Lemon.io</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/lemon-io-senior-net-full-stack-developer-2" target="_blank" rel="noopener">
+                                    <span class="title">Senior .NET Full-stack Developer</span>
+                                    <span class="company">Lemon.io</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/lemon-io-senior-angular-full-stack-developer" target="_blank" rel="noopener">
+                                    <span class="title">Senior Angular Full-stack Developer</span>
+                                    <span class="company">Lemon.io</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/launchdarkly-backend-engineer-multiple-positions" target="_blank" rel="noopener">
+                                    <span class="title">Backend Engineer (Multiple Positions)</span>
+                                    <span class="company">LaunchDarkly</span>
+                                </a>
+                            </li>
+                        
+                            <li class="job">
+                                <a href="https://weworkremotely.com/remote-jobs/lithic-senior-software-engineer-card-authorization" target="_blank" rel="noopener">
+                                    <span class="title">Senior Software Engineer, Card Authorization</span>
+                                    <span class="company">Lithic</span>
+                                </a>
+                            </li>
+                        
+                    </ul>
+                    <p class="none" data-empty="No rust jobs on We Work Remotely right now." hidden>No rust jobs on We Work Remotely right now.</p>
+                </section>
             
-                <a class="job" href="https://web3.career/quant-developer-gsrmarkets/154269" target="_blank" rel="noopener">
-                    <strong>Quant Developer</strong>
-                    Gsrmarkets
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-low-latency-engineer-gsrmarkets/154728" target="_blank" rel="noopener">
-                    <strong>Senior Low Latency Engineer</strong>
-                    Gsrmarkets
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-software-engineer-market-data-alpaca/99655" target="_blank" rel="noopener">
-                    <strong>Senior Software Engineer Market Data</strong>
-                    Alpaca
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-back-end-engineer-trading-platform-blockchain/98044" target="_blank" rel="noopener">
-                    <strong>Senior BackEnd Engineer Trading Platm</strong>
-                    Blockchain
-                </a>
-            
-                <a class="job" href="https://web3.career/sr-software-engineer-blockchain-charlesschwab/155353" target="_blank" rel="noopener">
-                    <strong>Sr Software Engineer Blockchain</strong>
-                    Charles Schwab
-                </a>
-            
-                <a class="job" href="https://web3.career/blockchain-engineer-architect-crypto-specialist-cafemomentumpittsburgh/155188" target="_blank" rel="noopener">
-                    <strong>Blockchain Engineer Architect Crypto Specialist</strong>
-                    Café Momentum Pittsburgh
-                </a>
-            
-                <a class="job" href="https://web3.career/founding-software-engineer-equanetwork/155132" target="_blank" rel="noopener">
-                    <strong>Founding Software Engineer</strong>
-                    Equa Network
-                </a>
-            
-                <a class="job" href="https://web3.career/digital-assets-blockchain-engineer-thedepositorytrust-amp-clearingcorporation-dtcc/155122" target="_blank" rel="noopener">
-                    <strong>Digital Assets Blockchain Engineer</strong>
-                    The Depository Trust &amp;amp; Clearing Corporation (DTCC)
-                </a>
-            
-                <a class="job" href="https://web3.career/solutions-architect-us-blockdaemon/155102" target="_blank" rel="noopener">
-                    <strong>Solutions Architect US</strong>
-                    Blockdaemon
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-security-engineer-product-infrastructure-squads/155069" target="_blank" rel="noopener">
-                    <strong>Senior Security Engineer Product Infrastructure</strong>
-                    Squads
-                </a>
-            
-                <a class="job" href="https://web3.career/binance-accelerator-program-system-performance-engineer-ai-binance/155064" target="_blank" rel="noopener">
-                    <strong>Binance Accelerator Program System Permance Engineer AI</strong>
-                    Binance
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-blockchain-engineer-banking-integrations-globalsettlementnetwork/155058" target="_blank" rel="noopener">
-                    <strong>Senior Blockchain Engineer Banking Integrations</strong>
-                    Global Settlement Network
-                </a>
-            
-                <a class="job" href="https://web3.career/blockchain-engineer-globalsettlementnetwork/155057" target="_blank" rel="noopener">
-                    <strong>Blockchain Engineer</strong>
-                    Global Settlement Network
-                </a>
-            
-                <a class="job" href="https://web3.career/enterprise-blockchain-architect-digital-assets-tokenization-maximaconsulting/155026" target="_blank" rel="noopener">
-                    <strong>Enterprise Blockchain Architect Digital Assets Tokenization</strong>
-                    Maxima Consulting
-                </a>
-            
-                <a class="job" href="https://web3.career/rust-developer-exchange-os-trading-engine-okx/155006" target="_blank" rel="noopener">
-                    <strong>Rust Developer Exchange OS Trading Engine</strong>
-                    Okx
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-security-engineer-product-jitolabs/154895" target="_blank" rel="noopener">
-                    <strong>Senior Security Engineer Product</strong>
-                    Jito Labs
-                </a>
-            
-                <a class="job" href="https://web3.career/platform-engineer-infrastructure-helius/154765" target="_blank" rel="noopener">
-                    <strong>Platm Engineer Infrastructure</strong>
-                    Helius
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-software-engineer-go-rust-blockchain-infrastructure-quicknode/154763" target="_blank" rel="noopener">
-                    <strong>Senior Software Engineer Go Rust Blockchain Infrastructure</strong>
-                    QuickNode
-                </a>
-            
-                <a class="job" href="https://web3.career/blockchain-architect-full-stack-digital-assets-tokenization-maximaconsulting/154756" target="_blank" rel="noopener">
-                    <strong>Blockchain Architect Full Stack – Digital Assets Tokenization</strong>
-                    Maxima Consulting
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-mobile-engineer-card-payment-okx/154735" target="_blank" rel="noopener">
-                    <strong>Senior Mobile Engineer Card Payment</strong>
-                    Okx
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-software-engineer-rust-consumer-kraken/154721" target="_blank" rel="noopener">
-                    <strong>Senior Software Engineer Rust Consumer</strong>
-                    Kraken
-                </a>
-            
-                <a class="job" href="https://web3.career/graduate-junior-software-engineer-elwoodtechnologies/154718" target="_blank" rel="noopener">
-                    <strong>Graduate Junior Software Engineer</strong>
-                    Elwoodtechnologies
-                </a>
-            
-                <a class="job" href="https://web3.career/protocol-engineer-swissnexus/154661" target="_blank" rel="noopener">
-                    <strong>Protocol Engineer</strong>
-                    Swiss Nexus
-                </a>
-            
-                <a class="job" href="https://web3.career/crypto-blockchain-architect-irissoftwareinc/154660" target="_blank" rel="noopener">
-                    <strong>Crypto Blockchain Architect</strong>
-                    Iris Software Inc.
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-security-engineer-defi-mystenlabs/154607" target="_blank" rel="noopener">
-                    <strong>Senior Security Engineer DeFi</strong>
-                    Mysten Labs
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-backend-engineer-offchainlabs/154583" target="_blank" rel="noopener">
-                    <strong>Senior Backend Engineer</strong>
-                    Offchain
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-engineer-blockchain-platforms-coreaiconsultinginc/154564" target="_blank" rel="noopener">
-                    <strong>Senior Engineer – Blockchain Platms</strong>
-                    Core AI Consulting Inc
-                </a>
-            
-                <a class="job" href="https://web3.career/graduate-software-engineer-blockchain-entry-level-bitofficial/154561" target="_blank" rel="noopener">
-                    <strong>Graduate Software Engineer Blockchain EntryLevel</strong>
-                    BIT Official
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-programming-language-engineer-cadence-flowfoundation/154538" target="_blank" rel="noopener">
-                    <strong>Senior Programming Language Engineer Cadence</strong>
-                    Flow Foundation
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-engineer-solana-r3/154536" target="_blank" rel="noopener">
-                    <strong>Senior Engineer Solana</strong>
-                    R3
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-blockchain-engineer-settlement-globalsettlementnetwork/154529" target="_blank" rel="noopener">
-                    <strong>Senior Blockchain Engineer Settlement</strong>
-                    Global Settlement Network
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-software-engineer-ccip-chainlinklabs/154527" target="_blank" rel="noopener">
-                    <strong>Senior Software Engineer CCIP</strong>
-                    Chainlink Labs
-                </a>
-            
-                <a class="job" href="https://web3.career/quant-developer-rust-liquidity-platform-delta-one-systematic-trading-okx/145502" target="_blank" rel="noopener">
-                    <strong>Quant Developer Rust Liquidity Platm Delta One Systematic Trading</strong>
-                    Okx
-                </a>
-            
-                <a class="job" href="https://web3.career/lead-engineer-frontier-traders-solanafoundation/154500" target="_blank" rel="noopener">
-                    <strong>Lead Engineer Frontier Traders</strong>
-                    Solana Foundation
-                </a>
-            
-                <a class="job" href="https://web3.career/engineering-manager-growth-foundations-kraken/154486" target="_blank" rel="noopener">
-                    <strong>Engineering Manager – Growth Foundations</strong>
-                    Kraken
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-software-engineer-react-native-business-services-kraken/154485" target="_blank" rel="noopener">
-                    <strong>Senior Software Engineer React Native Business Services</strong>
-                    Kraken
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-solutions-architect-tokenisation-chainlinklabs/154479" target="_blank" rel="noopener">
-                    <strong>Senior Solutions Architect Tokenisation</strong>
-                    Chainlink Labs
-                </a>
-            
-                <a class="job" href="https://web3.career/staff-software-engineer-margin-risk-alpaca/154477" target="_blank" rel="noopener">
-                    <strong>Staff Software Engineer Margin Risk</strong>
-                    Alpaca
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-qa-engineer-rust-java-margin-binance/154461" target="_blank" rel="noopener">
-                    <strong>Senior QA Engineer Rust Java Margin</strong>
-                    Binance
-                </a>
-            
-                <a class="job" href="https://web3.career/site-reliability-engineer-low-latency-trading-systems-ondofinance/154395" target="_blank" rel="noopener">
-                    <strong>Site Reliability Engineer LowLatency Trading Systems</strong>
-                    Ondo Finance
-                </a>
-            
-                <a class="job" href="https://web3.career/blockchain-consultant-elementtechnologies/154331" target="_blank" rel="noopener">
-                    <strong>Blockchain Consultant</strong>
-                    Element Technologies
-                </a>
-            
-                <a class="job" href="https://web3.career/head-of-onchain-engineering-mesh/154330" target="_blank" rel="noopener">
-                    <strong>Head of Onchain Engineering</strong>
-                    Mesh
-                </a>
-            
-                <a class="job" href="https://web3.career/senior-software-engineer-rust-core-services-kraken/154276" target="_blank" rel="noopener">
-                    <strong>Senior Software Engineer Rust Core Services</strong>
-                    Kraken
-                </a>
-            
-        
-            <h2>We Work Remotely <span>(7)</span></h2>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/assemblyai-senior-research-engineer" target="_blank" rel="noopener">
-                    <strong>Senior Research Engineer</strong>
-                    AssemblyAI
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/bondex-fullstack-web3-engineer-solidity-rust-typescript" target="_blank" rel="noopener">
-                    <strong>Fullstack Web3 Engineer (Solidity / Rust / Typescript)</strong>
-                    bondex
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/lemon-io-senior-react-full-stack-developer-7" target="_blank" rel="noopener">
-                    <strong>Senior React Full-stack Developer</strong>
-                    Lemon.io
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/lemon-io-senior-net-full-stack-developer-2" target="_blank" rel="noopener">
-                    <strong>Senior .NET Full-stack Developer</strong>
-                    Lemon.io
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/lemon-io-senior-angular-full-stack-developer" target="_blank" rel="noopener">
-                    <strong>Senior Angular Full-stack Developer</strong>
-                    Lemon.io
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/launchdarkly-backend-engineer-multiple-positions" target="_blank" rel="noopener">
-                    <strong>Backend Engineer (Multiple Positions)</strong>
-                    LaunchDarkly
-                </a>
-            
-                <a class="job" href="https://weworkremotely.com/remote-jobs/lithic-senior-software-engineer-card-authorization" target="_blank" rel="noopener">
-                    <strong>Senior Software Engineer, Card Authorization</strong>
-                    Lithic
-                </a>
-            
-        
-    </main>
+
+        </main>
+        <footer class="footer">
+            <p>Jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, last updated October 14, 2026. <a href="https://github.com/wonsik99/Intro-to-python-scraper">Source code on GitHub</a></p>
+        </footer>
+    </div>
+    
+    <script>
+        const keyword = "rust";
+        const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        // Same whole-word rule as the scraper, so "java" doesn't match "javascript"
+        const pattern = new RegExp(`(?<!\\w)(${escaped})(?!\\w)`, "gi");
+
+        // Highlight the skill inside each job title
+        document.querySelectorAll(".title").forEach((title) => {
+            const parts = title.textContent.split(pattern);
+            if (parts.length === 1) return;
+            title.replaceChildren(...parts.map((part, index) => {
+                if (index % 2 === 0) return part;
+                const mark = document.createElement("mark");
+                mark.textContent = part;
+                return mark;
+            }));
+        });
+
+        // Filter the list as you type
+        const filter = document.getElementById("filter");
+        const summary = document.getElementById("summary");
+        const defaultSummary = summary.textContent;
+
+        filter.addEventListener("input", () => {
+            const query = filter.value.trim();
+            let shown = 0;
+            document.querySelectorAll(".site").forEach((site) => {
+                const jobs = site.querySelectorAll(".job");
+                let visible = 0;
+                jobs.forEach((job) => {
+                    const matches = job.textContent.toLowerCase().includes(query.toLowerCase());
+                    job.hidden = !matches;
+                    if (matches) visible += 1;
+                });
+                const none = site.querySelector(".none");
+                none.hidden = visible > 0;
+                none.textContent = query && jobs.length ? `Nothing here matches "${query}".` : none.dataset.empty;
+                site.querySelector(".count").textContent = visible;
+                shown += visible;
+            });
+            summary.textContent = query ? `${shown} of ${summary.dataset.total} jobs match "${query}"` : defaultSummary;
+        });
+    </script>
+
 </body>
 </html>
