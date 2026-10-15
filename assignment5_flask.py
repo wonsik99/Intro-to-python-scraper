@@ -14,7 +14,7 @@ freezer = Freezer(app)
 
 @app.route("/")
 def home():
-    return render_template("home.html", keywords=KEYWORDS, static_site=app.config.get("STATIC_SITE", False))
+    return render_template("home.html", keywords=KEYWORDS, static_site=app.config.get("STATIC_SITE", False), updated=date.today())
 
 # /search/python/ instead of /search?keyword=python:
 # GitHub Pages can only serve files, and a path can become a file (search/python/index.html)
@@ -31,7 +31,7 @@ def search(keyword):
     }
     total = sum(len(jobs) for jobs in jobs_by_site.values())
 
-    return render_template("search.html", keyword=keyword, jobs_by_site=jobs_by_site, total=total, updated=date.today())
+    return render_template("search.html", keyword=keyword, keywords=KEYWORDS, jobs_by_site=jobs_by_site, total=total, updated=date.today())
 
 def scrape(scraper, target):
     # If one site breaks, show 0 jobs for it instead of breaking the whole page

@@ -1,42 +1,163 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ keyword }} jobs | Job Scrapper</title>
-    <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f6f8; color: #1f2328; }
-        main { max-width: 760px; margin: 48px auto; padding: 0 16px; }
-        header { text-align: center; }
-        header p { color: #59636e; }
-        a { color: #0969da; }
-        h2 { margin-top: 40px; padding-bottom: 8px; border-bottom: 2px solid #d0d7de; font-size: 20px; }
-        h2 span { color: #59636e; font-weight: normal; }
-        .job { display: block; margin: 12px 0; padding: 16px; border: 1px solid #d0d7de; border-radius: 8px; background: white; color: #59636e; text-decoration: none; }
-        .job:hover { border-color: #0969da; }
-        .job strong { display: block; margin-bottom: 4px; color: #0969da; }
-        .empty { color: #59636e; }
-    </style>
-</head>
-<body>
-    <main>
-        <header>
-            <h1>Results for "{{ keyword }}"</h1>
-            <p>{{ total }} jobs · updated {{ updated }}</p>
-            <a href="../../">← Search again</a>
-        </header>
+{% extends "base.html" %}
 
-        {% for site, jobs in jobs_by_site.items() %}
-            <h2>{{ site }} <span>({{ jobs|length }})</span></h2>
-            {% for job in jobs %}
-                <a class="job" href="{{ job.job_link }}" target="_blank" rel="noopener">
-                    <strong>{{ job.job_title }}</strong>
-                    {{ job.company_name }}
-                </a>
-            {% else %}
-                <p class="empty">No jobs found</p>
+{% block title %}{{ keyword }} jobs | Job Scrapper{% endblock %}
+
+{% block home_link %}../../{% endblock %}
+
+{% block style %}
+        .skill-nav { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 16px; }
+        .skill-nav a { color: var(--muted); text-decoration: none; }
+        .skill-nav a:hover { color: var(--ink); }
+        .skill-nav a[aria-current] { color: var(--hl-text); background: var(--hl-bg); padding: 0 4px; }
+        .hero { margin-top: 64px; }
+        .hero h1 { margin: 0; font-size: clamp(76px, 17vw, 208px); overflow-wrap: anywhere; }
+        .hero h1 span {
+            padding: 0 0.04em;
+            background-image: linear-gradient(var(--hl-bg), var(--hl-bg));
+            background-repeat: no-repeat;
+            background-position: 0 72%;
+            background-size: 100% 48%;
+            color: var(--hl-text);
+            -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
+            animation: draw 0.7s 0.2s ease-out both;
+        }
+        @keyframes draw { from { background-size: 0% 48%; } }
+        .summary { margin: 32px 0 0; color: var(--muted); font-size: 21px; }
+        .sources, .filter, .site { max-width: 760px; }
+        .sources { margin-top: 40px; }
+        .bar { display: flex; gap: 3px; height: 12px; }
+        .bar span { flex-basis: 0; border-radius: 2px; }
+        .legend { display: flex; flex-wrap: wrap; gap: 6px 24px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 15px; }
+        .legend a { color: var(--muted); text-decoration: none; }
+        .legend a:hover { color: var(--ink); }
+        .legend b { margin-left: 4px; color: var(--ink); }
+        .swatch { display: inline-block; width: 10px; height: 10px; margin-right: 8px; border-radius: 2px; }
+        .filter { margin-top: 48px; }
+        .filter label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 15px; }
+        .filter input {
+            width: 100%;
+            padding: 8px 0;
+            border: 0;
+            border-bottom: 2px solid var(--rule);
+            border-radius: 0;
+            background: transparent;
+            color: var(--ink);
+            font: inherit;
+            font-size: 20px;
+        }
+        .filter input:focus-visible { outline: none; border-bottom-color: var(--ink); }
+        .site { margin-top: 64px; scroll-margin-top: 24px; }
+        .site h2 { display: flex; align-items: center; margin: 0 0 4px; font-size: 28px; font-weight: 800; font-stretch: 75%; line-height: 1.2; }
+        .site h2 .count { margin-left: 12px; color: var(--muted); font-size: 18px; font-weight: 500; font-stretch: 100%; }
+        .jobs { margin: 0; padding: 0; list-style: none; }
+        .job, .none { border-bottom: 1px solid var(--rule); }
+        .job a { display: block; padding: 14px 0; text-decoration: none; }
+        .title { display: block; font-size: 19px; font-weight: 600; line-height: 1.35; }
+        .company { display: block; margin-top: 2px; color: var(--muted); font-size: 15px; }
+        .job a:hover .title {
+            text-decoration: underline;
+            text-decoration-color: var(--marker);
+            text-decoration-thickness: var(--hover-thickness);
+            text-underline-offset: var(--hover-offset);
+            text-decoration-skip-ink: none;
+        }
+        mark { padding: 0 0.06em; background: linear-gradient(transparent 38%, var(--hl-bg) 38%, var(--hl-bg) 92%, transparent 92%); color: var(--hl-text); }
+        .none { margin: 0; padding: 14px 0; color: var(--muted); }
+{% endblock %}
+
+{% block nav %}
+        <nav class="skill-nav" aria-label="Skills">
+            {% for other in keywords %}
+                <a href="../{{ other }}/" {% if other == keyword %}aria-current="page"{% endif %}>{{ other }}</a>
             {% endfor %}
-        {% endfor %}
-    </main>
-</body>
-</html>
+        </nav>
+{% endblock %}
+
+{% block content %}
+            <section class="hero">
+                <h1 class="big"><span>{{ keyword }}</span></h1>
+                <p class="summary" id="summary" data-total="{{ total }}">{{ total }} jobs across three job boards</p>
+            </section>
+
+            <div class="sources">
+                <div class="bar" aria-hidden="true">
+                    {% for site, jobs in jobs_by_site.items() %}
+                        {% if jobs %}<span style="flex-grow: {{ jobs|length }}; background: var(--source-{{ loop.index }})"></span>{% endif %}
+                    {% endfor %}
+                </div>
+                <ul class="legend">
+                    {% for site, jobs in jobs_by_site.items() %}
+                        <li><a href="#{{ site|lower|replace(' ', '-') }}"><span class="swatch" style="background: var(--source-{{ loop.index }})"></span>{{ site }}<b>{{ jobs|length }}</b></a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="filter">
+                <label for="filter">Filter these jobs</label>
+                <input id="filter" type="search" placeholder="Title or company" autocomplete="off">
+            </div>
+
+            {% for site, jobs in jobs_by_site.items() %}
+                <section class="site" id="{{ site|lower|replace(' ', '-') }}">
+                    <h2><span class="swatch" style="background: var(--source-{{ loop.index }})"></span>{{ site }}<span class="count">{{ jobs|length }}</span></h2>
+                    <ul class="jobs">
+                        {% for job in jobs %}
+                            <li class="job">
+                                <a href="{{ job.job_link }}" target="_blank" rel="noopener">
+                                    <span class="title">{{ job.job_title }}</span>
+                                    <span class="company">{{ job.company_name }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <p class="none" data-empty="No {{ keyword }} jobs on {{ site }} right now." {% if jobs %}hidden{% endif %}>No {{ keyword }} jobs on {{ site }} right now.</p>
+                </section>
+            {% endfor %}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const keyword = {{ keyword|tojson }};
+        const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        // Same whole-word rule as the scraper, so "java" doesn't match "javascript"
+        const pattern = new RegExp(`(?<!\\w)(${escaped})(?!\\w)`, "gi");
+
+        // Highlight the skill inside each job title
+        document.querySelectorAll(".title").forEach((title) => {
+            const parts = title.textContent.split(pattern);
+            if (parts.length === 1) return;
+            title.replaceChildren(...parts.map((part, index) => {
+                if (index % 2 === 0) return part;
+                const mark = document.createElement("mark");
+                mark.textContent = part;
+                return mark;
+            }));
+        });
+
+        // Filter the list as you type
+        const filter = document.getElementById("filter");
+        const summary = document.getElementById("summary");
+        const defaultSummary = summary.textContent;
+
+        filter.addEventListener("input", () => {
+            const query = filter.value.trim();
+            let shown = 0;
+            document.querySelectorAll(".site").forEach((site) => {
+                const jobs = site.querySelectorAll(".job");
+                let visible = 0;
+                jobs.forEach((job) => {
+                    const matches = job.textContent.toLowerCase().includes(query.toLowerCase());
+                    job.hidden = !matches;
+                    if (matches) visible += 1;
+                });
+                const none = site.querySelector(".none");
+                none.hidden = visible > 0;
+                none.textContent = query && jobs.length ? `Nothing here matches "${query}".` : none.dataset.empty;
+                site.querySelector(".count").textContent = visible;
+                shown += visible;
+            });
+            summary.textContent = query ? `${shown} of ${summary.dataset.total} jobs match "${query}"` : defaultSummary;
+        });
+    </script>
+{% endblock %}

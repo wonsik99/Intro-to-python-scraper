@@ -1,54 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Scrapper</title>
-    <style>
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f6f8; color: #1f2328; }
-        main { max-width: 560px; margin: 80px auto; padding: 0 16px; text-align: center; }
-        h1 { margin-bottom: 8px; }
-        p { color: #59636e; }
-        form { display: flex; gap: 8px; margin-top: 28px; }
-        input { flex: 1; min-width: 0; padding: 12px; font-size: 16px; border: 1px solid #d0d7de; border-radius: 8px; }
-        button { padding: 12px 20px; font-size: 16px; border: 0; border-radius: 8px; background: #0969da; color: white; cursor: pointer; }
-        button:hover { background: #0550ae; }
-        .message { min-height: 1.4em; color: #cf222e; }
-        .keywords a { display: inline-block; margin: 4px; padding: 6px 14px; border: 1px solid #d0d7de; border-radius: 999px; background: white; color: #0969da; text-decoration: none; }
-        .keywords a:hover { border-color: #0969da; }
-    </style>
-</head>
-<body>
-    <main>
-        <h1>Job Scrapper</h1>
-        <p>Search jobs on Berlin Startup Jobs, Web3 Career and We Work Remotely.</p>
-        <form id="search-form">
-            <input type="text" name="keyword" placeholder="Write one keyword please" required />
-            <button>Search</button>
-        </form>
-        <p class="message" id="message"></p>
-        <div class="keywords">
-            {% for keyword in keywords %}
-                <a href="search/{{ keyword }}/">{{ keyword }}</a>
-            {% endfor %}
-        </div>
-    </main>
+{% extends "base.html" %}
+
+{% block style %}
+        .intro { margin: 80px 0 12px; font-size: 21px; color: var(--muted); }
+        .skills { list-style: none; margin: 0; padding: 0; }
+        .skills li { line-height: 0.95; }
+        .skills a {
+            display: inline-block;
+            padding: 0 0.04em;
+            font-size: clamp(68px, 15vw, 176px);
+            text-decoration: none;
+            /* the highlighter stroke, drawn in on hover */
+            background-image: linear-gradient(var(--hl-bg), var(--hl-bg));
+            background-repeat: no-repeat;
+            background-position: 0 72%;
+            background-size: 0% 48%;
+            transition: background-size 0.3s ease-out, color 0.3s;
+        }
+        .skills a:hover, .skills a:focus-visible { background-size: 100% 48%; color: var(--hl-text); }
+        .other { max-width: 560px; margin-top: 64px; }
+        .other label { display: block; margin-bottom: 4px; color: var(--muted); font-size: 15px; }
+        .other .row { display: flex; gap: 12px; }
+        .other input {
+            flex: 1;
+            min-width: 0;
+            padding: 6px 0;
+            border: 0;
+            border-bottom: 3px solid var(--ink);
+            border-radius: 0;
+            background: transparent;
+            color: var(--ink);
+            font: inherit;
+            font-size: 24px;
+        }
+        .other input::placeholder { color: var(--muted); }
+        .other button {
+            padding: 0 22px;
+            border: 0;
+            border-radius: 6px;
+            background: var(--ink);
+            color: var(--paper);
+            font: inherit;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .message { min-height: 1.5em; margin: 12px 0 0; }
+        @media (max-width: 480px) {
+            .other .row { flex-direction: column; align-items: flex-start; }
+            .other input { width: 100%; }
+            .other button { padding: 12px 22px; }
+        }
+{% endblock %}
+
+{% block content %}
+            <p class="intro">What job do you want?</p>
+            <ul class="skills">
+                {% for keyword in keywords %}
+                    <li><a class="big" href="search/{{ keyword }}/">{{ keyword }}</a></li>
+                {% endfor %}
+            </ul>
+            <form class="other" id="search-form">
+                <label for="keyword">{% if static_site %}Looking for another skill?{% else %}Or search any skill{% endif %}</label>
+                <div class="row">
+                    <input id="keyword" name="keyword" type="text" placeholder="Write one keyword please" autocomplete="off" required>
+                    <button>Search jobs</button>
+                </div>
+                <p class="message" id="message" role="status"></p>
+            </form>
+{% endblock %}
+
+{% block scripts %}
     <script>
         const keywords = {{ keywords|tojson }};
         const staticSite = {{ static_site|tojson }};
         const form = document.getElementById("search-form");
+        const message = document.getElementById("message");
 
         form.addEventListener("submit", (event) => {
             event.preventDefault();
             const keyword = form.keyword.value.trim().toLowerCase();
             // GitHub Pages only has the pages that were built ahead of time
             if (staticSite && !keywords.includes(keyword)) {
-                document.getElementById("message").textContent = `No results for "${keyword}" yet. Try one of these:`;
+                message.textContent = `There's no page for "${keyword}" yet. Pick one of the skills above.`;
                 return;
             }
             // Relative link, so it works on localhost and under /Intro-to-python-scraper/ on GitHub Pages
             location.href = `search/${encodeURIComponent(keyword)}/`;
         });
     </script>
-</body>
-</html>
+{% endblock %}

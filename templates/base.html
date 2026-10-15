@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="description" content="Developer jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, searched by skill.">
+    <title>{% block title %}Job Scrapper{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='10' width='28' height='13' rx='3' fill='%23ffe24a'/></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+    <style>
+        /* Highlighter yellow always means "this matches your skill" */
+        :root {
+            --paper: #ffffff;
+            --ink: #18224b;
+            --muted: #5e6787;
+            --rule: #dce0ec;
+            --marker: #ffe24a;
+            --hl-bg: var(--marker);
+            --hl-text: var(--ink);
+            --hover-thickness: 0.45em;
+            --hover-offset: -0.3em;
+            --source-1: #18224b;
+            --source-2: #6b76b5;
+            --source-3: #b9c0e3;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --paper: #10163a;
+                --ink: #eef0f8;
+                --muted: #a3aac8;
+                --rule: #2a3366;
+                --hl-bg: transparent;
+                --hl-text: var(--marker);
+                --hover-thickness: 2px;
+                --hover-offset: 5px;
+                --source-1: #eef0f8;
+                --source-2: #9ea8d8;
+                --source-3: #4e5a94;
+            }
+        }
+        * { box-sizing: border-box; }
+        [hidden] { display: none !important; }
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: "Archivo", system-ui, sans-serif;
+            font-size: 18px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: inherit; }
+        :focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; border-radius: 2px; }
+        .page { max-width: 1120px; margin: 0 auto; padding: 28px 24px 56px; }
+        .top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; }
+        .wordmark { font-size: 19px; font-weight: 800; font-stretch: 75%; text-decoration: none; }
+        .big { font-weight: 900; font-stretch: 62%; line-height: 0.9; letter-spacing: -0.01em; }
+        .footer { max-width: 760px; margin-top: 112px; padding-top: 20px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 15px; }
+        .footer p { margin: 0; }
+        .footer a { color: var(--ink); }
+        @media (max-width: 600px) {
+            body { font-size: 17px; }
+            .page { padding: 20px 16px 48px; }
+            .footer { margin-top: 80px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+        {% block style %}{% endblock %}
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="top">
+            <a class="wordmark" href="{% block home_link %}./{% endblock %}">Job Scrapper</a>
+            {% block nav %}{% endblock %}
+        </header>
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        <footer class="footer">
+            <p>Jobs from Berlin Startup Jobs, Web3 Career and We Work Remotely, last updated {{ updated.strftime("%B") }} {{ updated.day }}, {{ updated.year }}. <a href="https://github.com/wonsik99/Intro-to-python-scraper">Source code on GitHub</a></p>
+        </footer>
+    </div>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
